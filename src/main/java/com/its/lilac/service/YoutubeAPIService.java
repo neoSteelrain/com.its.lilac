@@ -17,7 +17,7 @@ public class YoutubeAPIService {
 
     public SearchListResponse keywordSearch(String keyword){
 //        String youtubeKey = YoutubeConfig.getInstance().getYoutubeAPIKey();
-        String youtubeKey = "AIzaSyCGdoJmpUtkWH-fbB5BvvrUR2DgWR8iUo4";
+
         return getSearchListResponse(keyword, youtubeKey);
     }
 

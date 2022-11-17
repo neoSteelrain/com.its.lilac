@@ -135,3 +135,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+/.idea/compiler.xml
+/.idea/jarRepositories.xml
+
+# 프로젝트 api 키 모음
+api-keys.properties
