@@ -8,9 +8,30 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <script src="../../resources/js/jQuery-3-6-1.js"></script>
     <title>Title</title>
 </head>
 <body>
-Lilac!
+    <input type="button" onclick="gerYoutubeList()" value="가랏 유튜브">
+    <div id="resultDiv"></div>
 </body>
+<script>
+    const gerYoutubeList = () => {
+        $.ajax({
+            type:"get",
+            url:"/search/youtube/keyword-search",
+            dataType:"json",
+            data:{
+                keyword:"정보처리기사"
+            }
+            ,success:(result)=>{
+                console.log(result);
+                $('#resultDiv').text(result);
+            },
+            error:()=>{
+                alert("에러당");
+            }
+        });
+    }
+</script>
 </html>

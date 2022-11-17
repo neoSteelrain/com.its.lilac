@@ -18,7 +18,22 @@
     <org.springframework-version>5.2.9.RELEASE</org.springframework-version>
     <org.aspectj-version>1.8.10</org.aspectj-version>
     <org.slf4j-version>1.7.25</org.slf4j-version>
+
+    <!-- 유튜브 API 관련 프로퍼티 설정 -->
+    <project.youtube.version>v3-rev222-1.25.0</project.youtube.version>
+    <project.http.version>1.25.0</project.http.version>
+<!--    <project.oauth.version>1.25.0</project.oauth.version>-->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
   </properties>
+
+  <!-- 유튜브 API 메이븐 레포지토리 설정 -->
+  <repositories>
+    <repository>
+      <id>google-api-services</id>
+      <url>http://google-api-client-libraries.appspot.com/mavenrepo</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <!-- Spring -->
@@ -144,6 +159,27 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- 유튜브 DATA V3 디펜던시 추가 시작-->
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-youtube</artifactId>
+      <version>${project.youtube.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.http-client</groupId>
+      <artifactId>google-http-client-jackson2</artifactId>
+      <version>${project.http.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client-jackson2</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+
+  <!-- 유튜브 DATA V3 디펜던시 추가 끝-->
 
   </dependencies>
 
