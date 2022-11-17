@@ -6,19 +6,22 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 
+@PropertySource(value = "classpath:/api-keys.properties")
 @Service
 public class YoutubeAPIService {
 
+    @Value("${youtube.apikey}")
+    private String apiKey;
 
     public SearchListResponse keywordSearch(String keyword){
-//        String youtubeKey = YoutubeConfig.getInstance().getYoutubeAPIKey();
-
-        return getSearchListResponse(keyword, youtubeKey);
+        return getSearchListResponse(keyword, apiKey);
     }
 
     private SearchListResponse getSearchListResponse(String keyword, String apiKey){

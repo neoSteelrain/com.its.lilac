@@ -1,3 +1,22 @@
+/*package com.its.lilac.common;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+@Configuration
+@PropertySource(value = "/api-keys.properties")
+public class YoutubeConfig{
+
+    @Value("${youtube.apikey}")
+    private String apiKey;
+
+    public String getApiKey(){
+        return apiKey;
+    }
+}*/
+
+/*
 package com.its.lilac.common;
 
 import org.springframework.context.annotation.PropertySource;
@@ -24,3 +43,4 @@ public class YoutubeConfig {
         return env.getProperty("youtube.apikey");
     }
 }
+*/
