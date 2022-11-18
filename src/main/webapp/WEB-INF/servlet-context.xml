@@ -17,6 +17,7 @@
     <!-- 회원의 프로필사진을 저장할 경로 -->
 <!--    <resources mapping="/profile/**" location="file:///D:/lilac_profile/"/>-->
 
+
     <!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
     <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <beans:property name="prefix" value="/WEB-INF/views/" />

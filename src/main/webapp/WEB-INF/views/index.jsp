@@ -20,9 +20,11 @@
         $.ajax({
             type:"get",
             url:"/search/youtube/keyword-search",
-            dataType:"json",
+            //dataType:"json",
             data:{
-                keyword:"정보처리기사"
+                keyword:"정보처리기사",
+                offset:"0",
+                videoCount:"10"
             }
             ,success:(result)=>{
                 console.log(result);
