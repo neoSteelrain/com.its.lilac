@@ -6,12 +6,14 @@ import com.its.lilac.datamodel.VideoDTO;
 import com.its.lilac.service.YoutubeAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,24 +25,27 @@ import java.util.List;
 public class YoutubeAPIController {
 
     @Autowired
-    private YoutubeAPIService _youtubeService;
+    private YoutubeAPIService m_youtubeService;
 
 
-    /**
-     * 사용자가 입력한 검색어를 키워드로 유튜브영상 리스트를 페이징하여 뷰로 반환한다.
-     * @param keyword 검색 키워드
-     * @param offset 시작 페이지
-     * @param videoCount 페이지당 영상 갯수
-     * @return 페이징된 영상 리스트
-     * @throws IOException
-     */
+
     @GetMapping("/keyword-search")
     @ResponseBody
-    public String searchKeyword(@RequestParam("keyword") String keyword,
-                                @RequestParam("offset")int offset,
-                                @RequestParam("videoCount") int videoCount) throws IOException {
-        List<VideoDTO> videoDTOList = _youtubeService.searchKeyword(keyword, offset, videoCount);
+    public List<VideoDTO> searchKeyword(@RequestParam("keyword") String keyword,
+                                @RequestParam(value="offset", required=false, defaultValue="1")int offset,
+                                @RequestParam(value="videoCount", required=false, defaultValue="8") int videoCount){
+        List<VideoDTO> videoDTOList = null;
+        try{
+            videoDTOList = m_youtubeService.searchKeyword(keyword, offset, videoCount);
+        }catch(Exception ioe){
+        }
+        return videoDTOList;
+    }
 
-        return videoDTOList.toString();
+    @GetMapping("/play")
+    public String playVideo(@RequestParam("videoId") String videoId, Model model){
+        VideoDTO video = m_youtubeService.getVideoInfo(videoId);
+        model.addAttribute("video", video);
+        return "/youtube/video-play";
     }
 }

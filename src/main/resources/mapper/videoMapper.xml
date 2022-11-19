@@ -16,9 +16,42 @@
     </insert>
 
     <select id="listPaging" parameterType="java.util.Map" resultType="video">
-        select video_id, video_title, video_desc, video_date, video_thumbnail, video_views, video_channel_id, video_channel_title
+        select video_id,
+               video_title,
+               video_desc,
+               video_date,
+               video_thumbnail,
+               video_views,
+               video_channel_id,
+               video_channel_title
         from tbl_youtube
         where video_title like concat('%', #{keyword}, '%')
         order by video_date limit #{offset}, #{videoCount};
+    </select>
+
+    <select id="recommendedVideoList" resultType="video">
+        select tv.video_id,
+               tv.video_title,
+               tv.video_desc,
+               tv.video_date,
+               tv.video_thumbnail,
+               tv.video_views,
+               tv.video_channel_id,
+               tv.video_channel_title
+        from tbl_recommended_video trv inner join tbl_youtube tv
+        on trv.youtube_video_id = tv.video_id;
+    </select>
+
+    <select id="videoInfo" parameterType="String" resultType="video">
+        select video_id,
+               video_title,
+               video_desc,
+               video_date,
+               video_thumbnail,
+               video_views,
+               video_channel_id,
+               video_channel_title
+        from tbl_youtube
+        where video_id = #{videoId};
     </select>
 </mapper>

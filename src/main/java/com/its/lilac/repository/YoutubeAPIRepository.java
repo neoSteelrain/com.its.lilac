@@ -18,7 +18,7 @@ import java.util.Objects;
 public class YoutubeAPIRepository {
 
     @Autowired
-    private SqlSessionTemplate _sql;
+    private SqlSessionTemplate m_sql;
 
 
     /**
@@ -51,7 +51,7 @@ public class YoutubeAPIRepository {
             param.put("video_channel_id", video.getSnippet().getChannelId());
             param.put("video_channel_title", video.getSnippet().getChannelTitle());
             param.put("video_playlist_id", rId.getPlaylistId());
-            insertCount += _sql.insert("Video.saveVideo", param);
+            insertCount += m_sql.insert("Video.saveVideo", param);
         }
 
         return insertCount;
@@ -62,6 +62,14 @@ public class YoutubeAPIRepository {
         param.put("keyword", keyword);
         param.put("offset", offset);
         param.put("videoCount", videoCount);
-        return _sql.selectList("Video.listPaging", param);
+        return m_sql.selectList("Video.listPaging", param);
+    }
+
+    public List<VideoDTO> getRecommendedVideoList() {
+        return m_sql.selectList("Video.recommendedVideoList");
+    }
+
+    public VideoDTO getVideoInfo(String videoId) {
+        return m_sql.selectOne("Video.videoInfo", videoId);
     }
 }

@@ -24,18 +24,27 @@ import java.util.List;
 public class YoutubeAPIService {
 
     @Autowired
-    private YoutubeAPIRepository _youtubeRepository;
+    private YoutubeAPIRepository m_youtubeRepository;
 
     @Value("${youtube.apikey}")
     private String _apiKey;
 
 
-    public List<VideoDTO> searchKeyword(String keyword, int offset, int pageCount) {
+    /**
+     *
+     * @param keyword
+     * @param offset
+     * @param pageCount
+     * @return
+     */
+    public List<VideoDTO> searchKeyword(String keyword, int offset, int videoCount) {
 
-        return getSearchList(keyword, offset, pageCount);
+        return getVideoListPaging(keyword, offset, videoCount);
+        //return getSearchList(keyword, offset, pageCount);
     }
 
     /**
+     * 테스트용 메서드
      * 유튜브 API 응답을 DB에 저장하고 VideoDTO 리스트를 만들어서 컨트롤러에 반환한다.
      * @param keyword 검색어
      * @return 검색된 유튜브 동영상 리스트
@@ -45,9 +54,9 @@ public class YoutubeAPIService {
         //SearchListResponse res = getSearchListResponse(keyword, _apiKey);
         // API 호출결과를 DB에 저장
         // 일단 DB에 값을 넣기 위해 1번만 실행하고, 나중에 배치작업으로 DB에 넣어줘야 한다.
-        // int cnt = saveVideoList(res);
+        //        //int cnt = saveVideoList(res);
         // DB에서 키워드로 검색하고 페이징처리해서 VideoDTO 리스트 만들어서 컨트롤러에 리턴,
-        List<VideoDTO> videoDTOList = _youtubeRepository.getVideoListPaging(keyword, offset, videoCount);
+        List<VideoDTO> videoDTOList = m_youtubeRepository.getVideoListPaging(keyword, offset, videoCount);
         return videoDTOList;
     }
 
@@ -58,7 +67,8 @@ public class YoutubeAPIService {
      * @param videoCount 페이지당 영상 갯수
      */
     private List<VideoDTO> getVideoListPaging(String keyword, int offset, int videoCount){
-        return _youtubeRepository.getVideoListPaging(keyword, offset, videoCount);
+        int pageStart = (offset-1) * videoCount;
+        return m_youtubeRepository.getVideoListPaging(keyword, pageStart, videoCount);
     }
 
     /**
@@ -68,7 +78,7 @@ public class YoutubeAPIService {
      */
     private int saveVideoList(SearchListResponse searchListResponse){
         List<SearchResult> list = searchListResponse.getItems();
-        int rowCount = _youtubeRepository.saveVideoList(list);
+        int rowCount = m_youtubeRepository.saveVideoList(list);
 //        for(SearchResult video : list){
 //
 //        }
@@ -104,9 +114,9 @@ public class YoutubeAPIService {
             search.setQ(keyword);
             search.setType("video");
             search.setMaxResults(50l);
-            search.setOrder("date");
+            search.setOrder("viewCount");
             search.setVideoDefinition("high");
-            search.setVideoEmbeddable("true");
+            search.setVideoEmbeddable("any");
             
             // 응답필드 설정
             search.setFields("items(id/kind,id/videoId,id/playlistId,snippet/title,snippet/thumbnails/high/url,snippet/publishedAt,snippet/channelId,snippet/description,snippet/channelTitle)");
@@ -116,5 +126,24 @@ public class YoutubeAPIService {
             e.printStackTrace();
          }
         return response;
+    }
+
+    public List<VideoDTO> getRecommendedVideoList() {
+        // 영상제목이 34글자까지 2줄을 넘어가므로 30번째 부터 타이틀을 자르고 ... 으로 대체해준다.
+        List<VideoDTO> videoList = m_youtubeRepository.getRecommendedVideoList();
+        for(VideoDTO video : videoList){
+            String title = video.getVideo_title();
+            if(title == null)
+                continue;
+
+            if(title.length() > 34){
+                video.setVideo_title(title.substring(0, 30) + "...");
+            }
+        }
+        return videoList;
+    }
+
+    public VideoDTO getVideoInfo(String videoId) {
+        return m_youtubeRepository.getVideoInfo(videoId);
     }
 }
