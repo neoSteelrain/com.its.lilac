@@ -19,7 +19,7 @@
 
     <!-- Web Font -->
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-            rel="stylesheet">
+          rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
 
     <!-- ========================= CSS here ========================= -->
@@ -243,7 +243,8 @@
                                 <div class="col-lg-3 col-md-4 col-12">
                                     <div class="single-item-grid">
                                         <div class="image">
-                                            <a href="/search/youtube/play?videoId=${video.video_id}"><img src="${video.video_thumbnail}" alt="#"></a>
+                                            <a href="/search/youtube/play?videoId=${video.video_id}"><img
+                                                    src="${video.video_thumbnail}" alt="#"></a>
                                             <i class=" cross-badge lni lni-bolt"></i>
                                             <span class="flat-badge sale">추천영상</span>
                                         </div>
@@ -262,15 +263,17 @@
             </div>
         </div>
         <!--유튜브 페이징 인덱스 시작 -->
-        <div class="pagination left" hidden>
-            <ul class="pagination-list">
-                <li><a href="javascript:void(0)"><i class="lni lni-chevron-left"></i></a></li>
-                <li><a href="javascript:void(0)">1</a></li>
-                <li class="active"><a href="javascript:void(0)">2</a></li>
-                <li><a href="javascript:void(0)">3</a></li>
-                <li><a href="javascript:void(0)">4</a></li>
-                <li><a href="javascript:void(0)"><i class="lni lni-chevron-right"></i></a></li>
-            </ul>
+        <div id="div-paging-index">
+<%--            <div class="pagination left">--%>
+<%--                <ul class="pagination-list">--%>
+<%--                    <li><a href="javascript:void(0)"><i class="lni lni-chevron-left"></i></a></li>--%>
+<%--                    <li><a href="javascript:void(0)">1</a></li>--%>
+<%--                    <li class="active"><a href="javascript:void(0)">2</a></li>--%>
+<%--                    <li><a href="javascript:void(0)">3</a></li>--%>
+<%--                    <li><a href="javascript:void(0)">4</a></li>--%>
+<%--                    <li><a href="javascript:void(0)"><i class="lni lni-chevron-right"></i></a></li>--%>
+<%--                </ul>--%>
+<%--            </div>--%>
         </div>
         <!--유튜브 페이징 인덱스 끝 -->
     </div>
@@ -625,10 +628,17 @@
 </script>
 </body>
 <script>
-    /*
-    유튜브 검색을 처리하는 ajax 함수
+
+    /**
+     * - 유튜브영상 리스트를 ajax로 비동기 업데이트 하는 함수
+     * - 현재 UI 특성상 한번에 표시할 영상갯수는 8개로 고정한다
+     * - 함수호출 순서 -
+     * 사용자가 검색요청 -> searchYoutubeList 함수 -> searchKeyword 컨트롤러 -> paging-template.jsp 에서 jstl로 HTML 작성 ->
+     * searchYoutubeList 함수에서 일반TEXT로 HTML을 받아서 jQuery로 유튜브영상리스트 div, 페이징인덱스 div를 업데이트
+     * - 참고한 사이트 주소 : https://backstreet-programmer.tistory.com/105
+     * @param offsetParam 이동할 페이지번호
      */
-    const searchYoutubeList = () => {
+    const searchYoutubeList = (offsetParam) => {
         const m_keyword = $('#ipt-keyword').val();
         if (m_keyword == "")
             return;
@@ -636,30 +646,19 @@
         $.ajax({
             type: "get",
             url: "/search/youtube/keyword-search",
-            dataType: "json",
+            dataType: "text",
             data: {
                 keyword: m_keyword,
-                offset: "1",
+                offset: offsetParam,
                 videoCount: "8"
             },
-            success: (videoList) => {
-                console.log(videoList[0].video_id);
-                // console.log(videoList[1]);
-                //console.log(result);
-                <%--$('div-youtube-list').empty();--%>
-                <%--let videoHtml = "";--%>
-                <%--for(let i in videoList){--%>
-                <%--    videoHtml = "<div class='col-lg-3 col-md-4 col-12'><div class='single-item-grid'><div class='image'>";--%>
-                <%--    videoHtml += "<a href='/search/youtube/play?videoId="+video[i].video_id+"><img src="+video[i].video_thumbnail"+" alt='#'></a>";--%>
-                <%--    videoHtml += "<div class='content'>";--%>
-                <%--    videoHtml += "<a class='tag'>${video.video_channel_title}</a>";--%>
-                <%--    videoHtml += "<h3 class='title'>${video.video_title}</h3>";--%>
-                <%--    videoHtml += "<p>${video.video_desc}</p>";--%>
-                <%--    videoHtml += "<ul class='info'>";--%>
-                <%--    videoHtml += "<li class='price'>${video.video_views}</li>";--%>
-                <%--    videoHtml += "</li></ul></div></div></div>";--%>
-                <%--}--%>
-                <%--$('div-youtube-list').html(videoHtml);--%>
+            success: (result) => {
+                let html = jQuery('<div>').html(result);
+                let contents = html.find("div#video-paging-template").html();
+                $('#div-youtube-list').html(contents);
+
+                let pagingIndex = html.find("div#paging-index-template").html();
+                $('#div-paging-index').html(pagingIndex);
             },
             error: (errMsg) => {
                 alert(errMsg);

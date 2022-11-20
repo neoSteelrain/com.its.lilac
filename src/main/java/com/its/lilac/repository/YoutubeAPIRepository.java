@@ -72,4 +72,8 @@ public class YoutubeAPIRepository {
     public VideoDTO getVideoInfo(String videoId) {
         return m_sql.selectOne("Video.videoInfo", videoId);
     }
+
+    public int countTotalVideos(String keyword) {
+        return m_sql.selectOne("Video.totalVideos", keyword);
+    }
 }

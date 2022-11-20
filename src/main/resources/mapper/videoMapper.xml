@@ -54,4 +54,10 @@
         from tbl_youtube
         where video_id = #{videoId};
     </select>
+
+    <select id="totalVideos" parameterType="String" resultType="Integer">
+        select count(video_id)
+        from tbl_youtube
+        where video_title like concat('%', #{keyword}, '%');
+    </select>
 </mapper>

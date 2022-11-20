@@ -7,6 +7,8 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import com.its.lilac.common.PAIGING_CONFIG;
+import com.its.lilac.datamodel.PageDTO;
 import com.its.lilac.datamodel.VideoDTO;
 import com.its.lilac.repository.YoutubeAPIRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +36,22 @@ public class YoutubeAPIService {
      *
      * @param keyword
      * @param offset
-     * @param pageCount
+     * @param videoCount
      * @return
      */
     public List<VideoDTO> searchKeyword(String keyword, int offset, int videoCount) {
-
         return getVideoListPaging(keyword, offset, videoCount);
-        //return getSearchList(keyword, offset, pageCount);
+    }
+
+    /**
+     * DB에서 키워드로 검색하여 페이징된 결과를 반환한다.
+     * @param keyword 검색 키워드
+     * @param offset 시작 페이지
+     * @param videoCount 페이지당 영상 갯수
+     */
+    private List<VideoDTO> getVideoListPaging(String keyword, int offset, int videoCount){
+        int pageStart = (offset-1) * videoCount;
+        return m_youtubeRepository.getVideoListPaging(keyword, pageStart, videoCount);
     }
 
     /**
@@ -60,15 +71,25 @@ public class YoutubeAPIService {
         return videoDTOList;
     }
 
-    /**
-     * DB에서 키워드로 검색하여 페이징된 결과를 반환한다.
-     * @param keyword 검색 키워드
-     * @param offset 시작 페이지
-     * @param videoCount 페이지당 영상 갯수
-     */
-    private List<VideoDTO> getVideoListPaging(String keyword, int offset, int videoCount){
-        int pageStart = (offset-1) * videoCount;
-        return m_youtubeRepository.getVideoListPaging(keyword, pageStart, videoCount);
+    public PageDTO getPagingParam(String keyword, int page, int videoViewCount) {
+        // 전체 영상 갯수 조회
+        int totalVideoCount = m_youtubeRepository.countTotalVideos(keyword);
+        // 전체 페이지 갯수 계산
+        int maxPage = (int) (Math.ceil((double) totalVideoCount / videoViewCount));
+        // 시작 페이지 값(1,4,7,10, ---)
+        int startPage = (((int)(Math.ceil((double) page / PAIGING_CONFIG.BLOCK_LIMIT))) - 1) * PAIGING_CONFIG.BLOCK_LIMIT + 1;
+        // 끝 페이지 값 계산(3,6,9,12 ---)
+        int endPage = startPage + PAIGING_CONFIG.BLOCK_LIMIT - 1;
+        // 페이징이 끝나고 남은 페이지들을 처리하는  부분
+        if(endPage > maxPage){
+            endPage = maxPage;
+        }
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(page);
+        pageDTO.setStartPage(startPage);
+        pageDTO.setEndPage(endPage);
+        pageDTO.setMaxPage(maxPage);
+        return pageDTO;
     }
 
     /**
@@ -146,4 +167,5 @@ public class YoutubeAPIService {
     public VideoDTO getVideoInfo(String videoId) {
         return m_youtubeRepository.getVideoInfo(videoId);
     }
+
 }
