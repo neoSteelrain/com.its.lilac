@@ -23,7 +23,8 @@
                video_thumbnail,
                video_views,
                video_channel_id,
-               video_channel_title
+               video_channel_title,
+               video_search_count
         from tbl_youtube
         where video_title like concat('%', #{keyword}, '%')
         order by video_date limit #{offset}, #{videoCount};
@@ -37,7 +38,8 @@
                tv.video_thumbnail,
                tv.video_views,
                tv.video_channel_id,
-               tv.video_channel_title
+               tv.video_channel_title,
+               tv.video_search_count
         from tbl_recommended_video trv inner join tbl_youtube tv
         on trv.youtube_video_id = tv.video_id;
     </select>
@@ -50,7 +52,8 @@
                video_thumbnail,
                video_views,
                video_channel_id,
-               video_channel_title
+               video_channel_title,
+               video_search_count
         from tbl_youtube
         where video_id = #{videoId};
     </select>
@@ -60,4 +63,10 @@
         from tbl_youtube
         where video_title like concat('%', #{keyword}, '%');
     </select>
+
+    <update id="increaseVideoSearchCount" parameterType="String">
+        update tbl_youtube
+        set video_search_count = video_search_count + 1
+        where video_id = #{video_id};
+    </update>
 </mapper>

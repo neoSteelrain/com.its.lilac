@@ -105,7 +105,8 @@
                         </div> -->
                         <div class="col-12">
                             <div class="search-btn button">
-                                <button id="btn-search" class="btn" onclick="searchYoutubeList()"><i
+<%--                                <button id="btn-search" class="btn" onclick="searchYoutubeList()"><i--%>
+                                    <button id="btn-search" class="btn" onclick="searchLicenseSchedules()"><i
                                         class="lni lni-search-alt"></i> 검색
                                 </button>
                             </div>
@@ -662,6 +663,43 @@
             },
             error: (errMsg) => {
                 alert(errMsg);
+            }
+        });
+    }
+
+    const searchLicenseInfo = (keyword) =>{
+        if(keyword == "")
+            return;
+
+        $.ajax({
+            type:"get",
+            url:"/search/license/license",
+            data:{
+                licenseName : keyword
+            },
+            dataType: "json",
+            success:(result)=>{
+                console.log(result);
+            },
+            error:(errMsg)=>{
+
+            }
+        });
+    }
+
+    const searchLicenseSchedules = () => {
+        $.ajax({
+            type:"get",
+            url:"/search/license/license-schedules",
+            data:{
+                licenseCode : 1320
+            },
+            dataType: "json",
+            success:(result)=>{
+                console.log(result);
+            },
+            error:(errMsg)=>{
+                console.log("error : " + errMsg);
             }
         });
     }

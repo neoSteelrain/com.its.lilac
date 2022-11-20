@@ -54,7 +54,7 @@
                                 <li>
                                     <a href="javascript:void(0)">
                                         <i class="lni lni-calendar"></i>
-                                        <fmt:formatDate value="${video.video_date}" pattern="yyyy-MM-dd hh:mm:ss"></fmt:formatDate>
+                                        업로드 날짜 : <fmt:formatDate value="${video.video_date}" pattern="yyyy-MM-dd hh:mm:ss"></fmt:formatDate>
                                     </a>
                                 </li>
                                 <li>
@@ -66,7 +66,7 @@
                                 <li>
                                     <a href="javascript:void(0)">
                                         <i class="lni lni-eye"></i>
-                                        조회수
+                                        ${video.video_search_count}
                                     </a>
                                 </li>
                             </ul>

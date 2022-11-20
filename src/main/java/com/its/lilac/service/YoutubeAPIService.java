@@ -29,7 +29,7 @@ public class YoutubeAPIService {
     private YoutubeAPIRepository m_youtubeRepository;
 
     @Value("${youtube.apikey}")
-    private String _apiKey;
+    private String m_apiKey;
 
 
     /**
@@ -41,6 +41,7 @@ public class YoutubeAPIService {
      */
     public List<VideoDTO> searchKeyword(String keyword, int offset, int videoCount) {
         return getVideoListPaging(keyword, offset, videoCount);
+        //return getSearchList(keyword, offset, videoCount);
     }
 
     /**
@@ -62,10 +63,10 @@ public class YoutubeAPIService {
      */
     private List<VideoDTO> getSearchList(String keyword, int offset, int videoCount){
         // 유튜브 API 호출
-        //SearchListResponse res = getSearchListResponse(keyword, _apiKey);
+        SearchListResponse res = getSearchListResponse(keyword, m_apiKey);
         // API 호출결과를 DB에 저장
         // 일단 DB에 값을 넣기 위해 1번만 실행하고, 나중에 배치작업으로 DB에 넣어줘야 한다.
-        //        //int cnt = saveVideoList(res);
+        int cnt = saveVideoList(res);
         // DB에서 키워드로 검색하고 페이징처리해서 VideoDTO 리스트 만들어서 컨트롤러에 리턴,
         List<VideoDTO> videoDTOList = m_youtubeRepository.getVideoListPaging(keyword, offset, videoCount);
         return videoDTOList;
@@ -165,7 +166,7 @@ public class YoutubeAPIService {
     }
 
     public VideoDTO getVideoInfo(String videoId) {
+        int res = m_youtubeRepository.increaseVideoSearchCount(videoId);
         return m_youtubeRepository.getVideoInfo(videoId);
     }
-
 }

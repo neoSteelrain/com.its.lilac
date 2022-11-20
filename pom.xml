@@ -22,7 +22,9 @@
     <!-- 유튜브 API 관련 프로퍼티 설정 -->
     <project.youtube.version>v3-rev222-1.25.0</project.youtube.version>
     <project.http.version>1.25.0</project.http.version>
-<!--    <project.oauth.version>1.25.0</project.oauth.version>-->
+
+<!--유튜브검색(read)만 하므로 수정삭제추가등 write 권한을 부여하는 OAUTH 는 필요없다.
+    <project.oauth.version>1.25.0</project.oauth.version>-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
   </properties>
@@ -180,6 +182,23 @@
     </dependency>
 
   <!-- 유튜브 DATA V3 디펜던시 추가 끝-->
+
+    <!-- WebClient 를 이용하기 위한 디펜던시 -->
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-webflux -->
+  <!--  <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webflux</artifactId>
+      <version>${org.springframework-version}</version>
+    </dependency>-->
+
+    <!-- 아파치 HttpClient를 이용하기 위한 디펜던시 -->
+    <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.2</version>
+    </dependency>
+
 
   </dependencies>
 

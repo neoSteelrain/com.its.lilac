@@ -76,4 +76,8 @@ public class YoutubeAPIRepository {
     public int countTotalVideos(String keyword) {
         return m_sql.selectOne("Video.totalVideos", keyword);
     }
+
+    public int increaseVideoSearchCount(String videoId) {
+        return m_sql.update("Video.increaseVideoSearchCount", videoId);
+    }
 }

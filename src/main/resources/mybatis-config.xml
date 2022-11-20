@@ -4,5 +4,6 @@
 <configuration>
     <typeAliases>
         <typeAlias type="com.its.lilac.datamodel.VideoDTO" alias="video"></typeAlias>
+        <typeAlias type="com.its.lilac.datamodel.LicenseInfoDTO" alias="licenseInfo"></typeAlias>
     </typeAliases>
 </configuration>
