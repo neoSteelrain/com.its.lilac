@@ -161,31 +161,7 @@
                             </div>
                             <!-- End List Title -->
                             <!-- Start Single List -->
-                            <div class="single-item-list">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-7 col-md-7 col-12">
-                                        <div class="item-image">
-                                            <img src="../../resources/images/qnet-logo.gif" alt="#" height="72" width="106">
-                                            <div class="content">
-                                                <h3 class="title"><a href="javascript:void(0)">Brand New Iphone 11 Pro
-                                                    Maxfdfsdfffffffffffffdfsfdsfsffsdffffff</a></h3>
-                                                <span class="price">$800</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-md-2 col-12">
-                                        <p>2023-2-12</p>
-                                    </div>
-                                    <div class="col-lg-2 col-md-2 col-12">
-                                        <p>아니오</p>
-                                    </div>
-                                    <div class="col-lg-1 col-md-1 col-12 align-right">
-                                        <ul class="action-btn">
-                                            <li><a href="javascript:void(0)"><i class="lni lni-plus"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-
+                            <div id="div-lic-schedules" class="single-item-list">
 <%--                                <div class="row align-items-center">--%>
 <%--                                    <div class="col-lg-7 col-md-7 col-12">--%>
 <%--                                        <div class="item-image">--%>
@@ -209,7 +185,6 @@
 <%--                                        </ul>--%>
 <%--                                    </div>--%>
 <%--                                </div>--%>
-
                             </div>
                             <!-- End Single List -->
                         </div>
@@ -669,7 +644,7 @@
                 $('#div-paging-index').html(pagingIndex);
             },
             error: (errMsg) => {
-                alert(errMsg);
+                alert(errMsg.toString());
             }
         });
     }
@@ -683,38 +658,40 @@
         if (m_keyword == "")
             return;
 
-        console.log(m_keyword);
         $.ajax({
             type:"get",
             url:"/search/license/schedules-keyword",
+            dataType: "text",
             data:{
                 keyword : m_keyword
             },
-            dataType: "json",
             success:(result)=>{
-                console.log(result);
+                // console.log(result);
+                let html = jQuery('<div>').html(result);
+                let contents = html.find("div#lic-schedule-template").html();
+                $('#div-lic-schedules').html(contents);
             },
             error:(errMsg)=>{
-
+                alert(errMsg.toString());
             }
         });
     }
 
-    const searchLicenseSchedules = () => {
-        $.ajax({
-            type:"get",
-            url:"/search/license/license-schedules",
-            data:{
-                licenseCode : 1320
-            },
-            dataType: "json",
-            success:(result)=>{
-                console.log(result);
-            },
-            error:(errMsg)=>{
-                console.log("error : " + errMsg);
-            }
-        });
-    }
+    // const searchLicenseSchedules = () => {
+    //     $.ajax({
+    //         type:"get",
+    //         url:"/search/license/license-schedules",
+    //         data:{
+    //             licenseCode : 1320
+    //         },
+    //         dataType: "json",
+    //         success:(result)=>{
+    //             console.log(result);
+    //         },
+    //         error:(errMsg)=>{
+    //             console.log("error : " + errMsg);
+    //         }
+    //     });
+    // }
 </script>
 </html>

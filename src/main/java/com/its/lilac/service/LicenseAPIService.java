@@ -69,6 +69,7 @@ public class LicenseAPIService {
                 sch.setLicense_schedule_json(jsonObj);
                 sch.setLicense_title(lic.getLicense_name());
                 sch.setLicense_code(lic.getLicense_code());
+                appendViewData(sch);
                 sch_list.add(sch);
             }
         }catch (IOException ioe){
@@ -80,14 +81,49 @@ public class LicenseAPIService {
     /**
      * 화면에 출력할 진행단계, 종료일자 를 추가한다.
      * @param dto 추가할 DTO
-     * @return 추가된 DTO
      */
-    private LicenseScheduleDTO appendViewData(LicenseScheduleDTO dto){
+    private void appendViewData(LicenseScheduleDTO dto){
         List<Items> items = dto.getLicense_schedule_json().getBody().getItems();
         // 현재 시험이 어느단계 인지 알아내는 부분
+        int now = Integer.parseInt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
+        for(Items item : items){
+            dto.setLic_desc(item.getDescription());
+            if(Integer.parseInt(item.getDocRegStartDt()) <= now && Integer.parseInt(item.getDocRegEndDt()) >= now ){
+                dto.setLic_step(item.getImplSeq() + "회차 필기시험 접수중");
+                dto.setLic_end_date(item.getDocRegEndDt());
+                break;
+            }
+            if(Integer.parseInt(item.getDocExamStartDt()) <= now && Integer.parseInt(item.getDocExamEndDt()) >= now ){
+                dto.setLic_step(item.getImplSeq() + "회차 필기시험 진행중");
+                dto.setLic_end_date(item.getDocExamEndDt());
+                break;
+            }
+            if(Integer.parseInt(item.getDocPassDt()) == now){
+                dto.setLic_step(item.getImplSeq() + "회차 필기시험 결과발표");
+                dto.setLic_end_date(item.getDocPassDt());
+                break;
+            }
+            if(Integer.parseInt(item.getPracRegStartDt()) <= now && Integer.parseInt(item.getPracRegEndDt()) >= now ){
+                dto.setLic_step(item.getImplSeq() + "회차 실기시험 접수중");
+                dto.setLic_end_date(item.getPracRegEndDt());
+                break;
+            }
+            if(Integer.parseInt(item.getPracExamStartDt()) <= now && Integer.parseInt(item.getPracExamEndDt()) >= now ){
+                dto.setLic_step(item.getImplSeq() + "회차 실기시험 진행중");
+                dto.setLic_end_date(item.getPracExamEndDt());
+                break;
+            }
+            if(Integer.parseInt(item.getPracPassDt()) == now){
+                dto.setLic_step(item.getImplSeq() + "회차 실기시험 결과발표");
+                dto.setLic_end_date(item.getPracPassDt());
+                break;
+            }
+            // 여기까지 오면 날짜가 시험일정에 하나도 맞지않는 것이므로 해당하지 않음으로 설정
+            dto.setLic_step("해당사항 없음");
+            dto.setLic_end_date("-");
+        }
 
-        return dto;
     }
 
     /**

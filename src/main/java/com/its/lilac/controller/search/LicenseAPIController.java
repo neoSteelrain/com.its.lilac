@@ -29,7 +29,7 @@ public class LicenseAPIController {
      */
     @GetMapping("/schedules-keyword")
     public String getLicenseInfo(@RequestParam("keyword") String keyword, Model model){
-        model.addAttribute("lic-schedules", m_licenseAPIService.getLicenseSchedulesByKeyword(keyword));
+        model.addAttribute("licSchedules", m_licenseAPIService.getLicenseSchedulesByKeyword(keyword));
         return "/license/license-template";
     }
 
