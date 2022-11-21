@@ -12,6 +12,7 @@
     <title>Title</title>
 </head>
 <body>
+    <!-- 유튜브 영상 목록 템플릿 시작 -->
     <div id="video-paging-template">
         <c:forEach items="${videoList}" var="video">
             <div class="col-lg-3 col-md-4 col-12">
@@ -28,7 +29,9 @@
             </div>
         </c:forEach>
     </div>
+    <!-- 유튜브 영상 목록 템플릿 끝 -->
 
+    <!-- 유튜브 영상 목록 페이징 인덱스 시작 -->
     <div id="paging-index-template" >
         <div class="pagination left">
             <ul class="pagination-list">
@@ -63,6 +66,6 @@
             </ul>
         </div>
     </div>
-
+    <!-- 유튜브 영상 목록 페이징 인덱스 끝 -->
 </body>
 </html>

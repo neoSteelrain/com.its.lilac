@@ -78,35 +78,30 @@
                         </div>
                         <div class="col-12">
                             <div class="search-input">
-                                <label for="category"><i class="lni lni-grid-alt theme-color"></i></label>
-                                <select name="category" id="category">
+                                <label for="slt-category"><i class="lni lni-grid-alt theme-color"></i></label>
+                                <select name="slt-category" id="slt-category">
                                     <option value="none" selected disabled>자격증 분류</option>
-                                    <option value="none">정보처리기사</option>
-                                    <option value="none">정보처리산업기사</option>
-                                    <option value="none">리눅스마스터1급</option>
-                                    <option value="none">리눅스마스터2급</option>
-                                    <option value="none">빅데이터분석기사</option>
+                                    <c:forEach items="${licenseList}" var="license">
+                                        <option value="${license.license_code}">${license.license_name}</option>
+                                    </c:forEach>
                                 </select>
                             </div>
                         </div>
+                        <!-- 지역구 정보는 보류 -->
                         <!-- <div class="col-12">
                             <div class="search-input">
                                 <label for="location"><i class="lni lni-map-marker theme-color"></i></label>
                                 <select name="location" id="location">
-                                    <option value="none" selected disabled>Locations</option>
-                                    <option value="none">New York</option>
-                                    <option value="none">California</option>
-                                    <option value="none">Washington</option>
-                                    <option value="none">Birmingham</option>
-                                    <option value="none">Chicago</option>
-                                    <option value="none">Phoenix</option>
+                                    <option value="none" selected disabled>지역구</option>
+                                    <option value="none">인천</option>
+                                    <option value="none">서울</option>
                                 </select>
                             </div>
                         </div> -->
                         <div class="col-12">
                             <div class="search-btn button">
 <%--                                <button id="btn-search" class="btn" onclick="searchYoutubeList()"><i--%>
-                                    <button id="btn-search" class="btn" onclick="searchLicenseSchedules()"><i
+                                    <button id="btn-search" class="btn" onclick="searchLicenseSchedulesByKeyword()"><i
                                         class="lni lni-search-alt"></i> 검색
                                 </button>
                             </div>
@@ -154,10 +149,10 @@
                                         <p>자격증 정보</p>
                                     </div>
                                     <div class="col-lg-2 col-md-2 col-12">
-                                        <p>마감날짜</p>
+                                        <p>진행단계</p>
                                     </div>
                                     <div class="col-lg-2 col-md-2 col-12">
-                                        <p>신청가능여부</p>
+                                        <p>종료일자</p>
                                     </div>
                                     <div class="col-lg-1 col-md-1 col-12 align-right">
                                         <p>강의노트</p>
@@ -170,7 +165,7 @@
                                 <div class="row align-items-center">
                                     <div class="col-lg-7 col-md-7 col-12">
                                         <div class="item-image">
-                                            <img src="https://via.placeholder.com/100x100" alt="#">
+                                            <img src="../../resources/images/qnet-logo.gif" alt="#" height="72" width="106">
                                             <div class="content">
                                                 <h3 class="title"><a href="javascript:void(0)">Brand New Iphone 11 Pro
                                                     Maxfdfsdfffffffffffffdfsfdsfsffsdffffff</a></h3>
@@ -190,21 +185,33 @@
                                         </ul>
                                     </div>
                                 </div>
+
+<%--                                <div class="row align-items-center">--%>
+<%--                                    <div class="col-lg-7 col-md-7 col-12">--%>
+<%--                                        <div class="item-image">--%>
+<%--                                            <img src="../../resources/images/qnet-logo.gif" alt="#" height="72" width="106">--%>
+<%--                                            <div class="content">--%>
+<%--                                                <h3 class="title"><a href="javascript:void(0)">Brand New Iphone 11 Pro--%>
+<%--                                                    Maxfdfsdfffffffffffffdfsfdsfsffsdffffff</a></h3>--%>
+<%--                                                <span class="price">$800</span>--%>
+<%--                                            </div>--%>
+<%--                                        </div>--%>
+<%--                                    </div>--%>
+<%--                                    <div class="col-lg-2 col-md-2 col-12">--%>
+<%--                                        <p>2023-2-12</p>--%>
+<%--                                    </div>--%>
+<%--                                    <div class="col-lg-2 col-md-2 col-12">--%>
+<%--                                        <p>아니오</p>--%>
+<%--                                    </div>--%>
+<%--                                    <div class="col-lg-1 col-md-1 col-12 align-right">--%>
+<%--                                        <ul class="action-btn">--%>
+<%--                                            <li><a href="javascript:void(0)"><i class="lni lni-plus"></i></a></li>--%>
+<%--                                        </ul>--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
+
                             </div>
                             <!-- End Single List -->
-
-                            <!-- Pagination -->
-                            <div class="pagination left">
-                                <ul class="pagination-list">
-                                    <li><a href="javascript:void(0)"><i class="lni lni-chevron-left"></i></a></li>
-                                    <li class="active"><a href="javascript:void(0)">1</a></li>
-                                    <li><a href="javascript:void(0)">2</a></li>
-                                    <li><a href="javascript:void(0)">3</a></li>
-                                    <li><a href="javascript:void(0)">4</a></li>
-                                    <li><a href="javascript:void(0)"><i class="lni lni-chevron-right"></i></a></li>
-                                </ul>
-                            </div>
-                            <!--/ End Pagination -->
                         </div>
                         <!-- End Items Area -->
                     </div>
@@ -667,15 +674,21 @@
         });
     }
 
-    const searchLicenseInfo = (keyword) =>{
-        if(keyword == "")
+    /**
+     * 사용자가 키워드검색으로 자격증을 검색했을때 처리하는 함수
+     * @param keyword 사용자가 입력한 키워드
+     */
+    const searchLicenseSchedulesByKeyword = () =>{
+        const m_keyword = $('#ipt-keyword').val();
+        if (m_keyword == "")
             return;
 
+        console.log(m_keyword);
         $.ajax({
             type:"get",
-            url:"/search/license/license",
+            url:"/search/license/schedules-keyword",
             data:{
-                licenseName : keyword
+                keyword : m_keyword
             },
             dataType: "json",
             success:(result)=>{

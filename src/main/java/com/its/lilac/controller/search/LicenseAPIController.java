@@ -5,6 +5,7 @@ import com.its.lilac.datamodel.LicenseScheduleDTO;
 import com.its.lilac.service.LicenseAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,25 +20,22 @@ public class LicenseAPIController {
     @Autowired
     private LicenseAPIService m_licenseAPIService;
 
-    @GetMapping("/schedule-search")
-        public String getLicenseSchedule(@RequestParam("licenseName") String licenseName){
-        LicenseScheduleDTO licenseScheduleDTO = m_licenseAPIService.getLicenseSchedule(licenseName);
-        return "";
-    }
+
 
     /**
      * 사용자가 검색한 자격증이름에 해당하는 자격증 종류를 반환한다.
-     * @param licenseName 검색하려는 자격증 이름
+     * @param keyword 검색하려는 자격증 이름
      * @return 자격증이름으로 검색된 자격증 목록
      */
-    @GetMapping("/license-info")
-    @ResponseBody
-    public List<LicenseInfoDTO> getLicenseInfo(@RequestParam("licenseName") String licenseName){
-        return m_licenseAPIService.getLicenseInfo(licenseName);
+    @GetMapping("/schedules-keyword")
+    public String getLicenseInfo(@RequestParam("keyword") String keyword, Model model){
+        model.addAttribute("lic-schedules", m_licenseAPIService.getLicenseSchedulesByKeyword(keyword));
+        return "/license/license-template";
     }
 
-    @GetMapping("/license-schedules")
+/*
+    @GetMapping("/schedules-code")
     public List<LicenseScheduleDTO> getLicenseSchedules(@RequestParam("licenseCode") int licenseCode){
         return m_licenseAPIService.getLicenseSchedules(licenseCode);
-    }
+    }*/
 }

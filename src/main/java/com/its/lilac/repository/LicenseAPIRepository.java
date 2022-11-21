@@ -13,7 +13,11 @@ public class LicenseAPIRepository {
     @Autowired
     private SqlSessionTemplate m_sql;
 
-    public List<LicenseInfoDTO> getLicenseCode(String licenseName) {
-        return m_sql.selectOne("licenseCode", licenseName);
+    public List<LicenseInfoDTO> getLicenseList() {
+        return m_sql.selectList("License.licenseList");
+    }
+
+    public List<LicenseInfoDTO> getLicenseList(String keyword){
+        return m_sql.selectList("License.licenseListByKeyword", keyword);
     }
 }
