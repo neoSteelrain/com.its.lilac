@@ -21,7 +21,6 @@ public class LicenseAPIController {
     private LicenseAPIService m_licenseAPIService;
 
 
-
     /**
      * 사용자가 검색한 자격증이름에 해당하는 자격증 종류를 반환한다.
      * @param keyword 검색하려는 자격증 이름
@@ -29,7 +28,8 @@ public class LicenseAPIController {
      */
     @GetMapping("/schedules-keyword")
     public String getLicenseInfo(@RequestParam("keyword") String keyword, Model model){
-        model.addAttribute("licSchedules", m_licenseAPIService.getLicenseSchedulesByKeyword(keyword));
+        // 입력문자열에 공백이 있으면 안되므로 trim 처리
+        model.addAttribute("licSchedules", m_licenseAPIService.getLicenseSchedulesByKeyword(keyword.trim()));
         return "/license/license-template";
     }
 

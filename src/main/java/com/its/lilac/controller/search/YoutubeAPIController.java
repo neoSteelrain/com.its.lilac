@@ -44,10 +44,12 @@ public class YoutubeAPIController {
                                 @RequestParam(value = "videoCount", required = false, defaultValue = "8") int videoCount,
                                 Model model) {
         List<VideoDTO> videoDTOList = null;
+        // 입력문자열에 공백이 있으면 안되므로 trim 처리
+        String l_keyword = keyword.trim();
         try {
-            videoDTOList = m_youtubeService.searchKeyword(keyword, offset, videoCount);
+            videoDTOList = m_youtubeService.searchKeyword(l_keyword, offset, videoCount);
             model.addAttribute("videoList", videoDTOList);
-            model.addAttribute("videoPaging", m_youtubeService.getPagingParam(keyword, offset, videoCount));
+            model.addAttribute("videoPaging", m_youtubeService.getPagingParam(l_keyword, offset, videoCount));
         } catch (Exception ioe) {
             // 예외가 발생할 경우 검색결과가 없도록 보여준다.
             model.addAttribute("videoList", new ArrayList<VideoDTO>(0));

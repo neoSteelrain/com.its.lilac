@@ -666,7 +666,6 @@
                 keyword : m_keyword
             },
             success:(result)=>{
-                // console.log(result);
                 let html = jQuery('<div>').html(result);
                 let contents = html.find("div#lic-schedule-template").html();
                 $('#div-lic-schedules').html(contents);

@@ -79,14 +79,14 @@ public class LicenseAPIService {
     }
 
     /**
-     * 화면에 출력할 진행단계, 종료일자 를 추가한다.
+     * 화면에 출력할 진행단계, 종료일자를 추가한다.
      * @param dto 추가할 DTO
      */
     private void appendViewData(LicenseScheduleDTO dto){
         List<Items> items = dto.getLicense_schedule_json().getBody().getItems();
-        // 현재 시험이 어느단계 인지 알아내는 부분
+        // 문자열보다는 숫자가 더 비교가 확실하므로 자격증 날짜와 비교할 현재날짜를 int로 구한다.
         int now = Integer.parseInt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-
+        // 현재 시험이 어느단계 인지 알아내는 부분, 어차피 하나밖에 해당이 안되기 때문에 1개라도 걸리면 바로 종료
         for(Items item : items){
             dto.setLic_desc(item.getDescription());
             if(Integer.parseInt(item.getDocRegStartDt()) <= now && Integer.parseInt(item.getDocRegEndDt()) >= now ){
@@ -119,7 +119,7 @@ public class LicenseAPIService {
                 dto.setLic_end_date(item.getPracPassDt());
                 break;
             }
-            // 여기까지 오면 날짜가 시험일정에 하나도 맞지않는 것이므로 해당하지 않음으로 설정
+            // 여기까지 오면 현재날짜가 시험일정에 해당하지않는 것이므로 해당사항 없음으로 설정
             dto.setLic_step("해당사항 없음");
             dto.setLic_end_date("-");
         }
