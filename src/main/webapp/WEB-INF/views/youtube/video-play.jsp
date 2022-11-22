@@ -79,7 +79,7 @@
     </div>
 </section>
 
-<script src="../../../resources/js/bootstrap.bundle.js"></script>
+<script src="../../../resources/js/bootstrap.bundle.min.js"></script>
 <script src="../../../resources/js/jQuery-3-6-1.js"></script>
 <script src="../../../resources/js/wow.min.js"></script>
 <script src="../../../resources/js/tiny-slider.js"></script>

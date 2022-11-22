@@ -32,13 +32,7 @@ public class YoutubeAPIService {
     private String m_apiKey;
 
 
-    /**
-     *
-     * @param keyword
-     * @param offset
-     * @param videoCount
-     * @return
-     */
+   
     public List<VideoDTO> searchKeyword(String keyword, int offset, int videoCount) {
         return getVideoListPaging(keyword, offset, videoCount);
 //        return getSearchList(keyword, offset, videoCount); // 테스트용 주석
@@ -72,6 +66,13 @@ public class YoutubeAPIService {
         return videoDTOList;
     }
 
+    /**
+     * 유튜브 페이징 인덱스를 생성하는 메서드
+     * @param keyword 검색키워드
+     * @param page 뷰에 보여질 페이지 
+     * @param videoViewCount 한페이지에 보여질 영상의 갯수
+     * @return 페이징 인덱스 DTO
+     */
     public PageDTO getPagingParam(String keyword, int page, int videoViewCount) {
         // 전체 영상 갯수 조회
         int totalVideoCount = m_youtubeRepository.countTotalVideos(keyword);
@@ -150,6 +151,10 @@ public class YoutubeAPIService {
         return response;
     }
 
+    /**
+     * 랜딩페이지에 보여질 추천영상리스트를 반환하는 메서드
+     * @return 추천영상리스트
+     */
     public List<VideoDTO> getRecommendedVideoList() {
         // 영상제목이 34글자까지 2줄을 넘어가므로 30번째 부터 타이틀을 자르고 ... 으로 대체해준다.
         List<VideoDTO> videoList = m_youtubeRepository.getRecommendedVideoList();
@@ -165,6 +170,11 @@ public class YoutubeAPIService {
         return videoList;
     }
 
+    /**
+     * 자세히 보기 페이지에서 보여지는 유튜브 영상을 반환하는 메서드
+     * @param videoId 자세히 보여질 유튜브 영상의 ID
+     * @return 유튜브영상
+     */
     public VideoDTO getVideoInfo(String videoId) {
         int res = m_youtubeRepository.increaseVideoSearchCount(videoId);
         return m_youtubeRepository.getVideoInfo(videoId);

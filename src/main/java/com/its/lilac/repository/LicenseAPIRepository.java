@@ -20,4 +20,8 @@ public class LicenseAPIRepository {
     public List<LicenseInfoDTO> getLicenseList(String keyword){
         return m_sql.selectList("License.licenseListByKeyword", keyword);
     }
+
+    public LicenseInfoDTO getLicenseInfo(int licenseCode) {
+        return m_sql.selectOne("License.licenseInfoByCode", licenseCode);
+    }
 }

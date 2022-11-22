@@ -139,7 +139,7 @@
                                     <a href="#"><i class="lni lni-enter"></i> 로그인</a>
                                 </li>
                                 <li id="li-registration">
-                                    <a href="#"><i class="lni lni-user"></i> 회원가입</a>
+                                    <a href="../user/registration"><i class="lni lni-user"></i> 회원가입</a>
                                 </li>
                             </ul>
                         </div>
@@ -170,5 +170,11 @@
         </div> <!-- row -->
     </div>
 </header>
+<script src="../../../resources/js/bootstrap.bundle.min.js"></script>
+<script src="../../../resources/js/jQuery-3-6-1.js"></script>
+<script src="../../../resources/js/wow.min.js"></script>
+<script src="../../../resources/js/tiny-slider.js"></script>
+<script src="../../../resources/js/glightbox.min.js"></script>
+<script src="../../../resources/js/main.js"></script>
 </body>
 </html>

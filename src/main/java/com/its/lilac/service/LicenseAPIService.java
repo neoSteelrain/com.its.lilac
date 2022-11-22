@@ -40,6 +40,10 @@ public class LicenseAPIService {
     @Value("${qualExamSchd.apikey}")
     private String m_apiKey;
 
+    /**
+     * DB에 있는 모든 자격증 종목코드를 반환한다.
+     * @return 종목코드를 포함한 자격증정보 리스트
+     */
     public List<LicenseInfoDTO> getLicenseList() {
         return m_licenseAPIRepository.getLicenseList();
     }
@@ -51,6 +55,7 @@ public class LicenseAPIService {
      */
     public List<LicenseScheduleDTO> getLicenseSchedulesByKeyword(String keyword) {
         /*
+        - 작업순서
         1. 키워드로 검색된 모든 자격증코드를 가져온다.
         2. 각각의 자격증코드에 해당하는 자격증 시험일정을 API를 통해 가져온다.
         3. 자격증 시험일정 리스트를 만들어서 반환한다.
@@ -84,7 +89,7 @@ public class LicenseAPIService {
      */
     private void appendViewData(LicenseScheduleDTO dto){
         List<Items> items = dto.getLicense_schedule_json().getBody().getItems();
-        // 문자열보다는 숫자가 더 비교가 확실하므로 자격증 날짜와 비교할 현재날짜를 int로 구한다.
+        // 문자열보다는 숫자로 하는 비교가 더 확실하므로 자격증 날짜와 비교할 현재날짜를 int로 구한다.
         int now = Integer.parseInt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
         // 현재 시험이 어느단계 인지 알아내는 부분, 어차피 하나밖에 해당이 안되기 때문에 1개라도 걸리면 바로 종료
         for(Items item : items){
@@ -119,39 +124,15 @@ public class LicenseAPIService {
                 dto.setLic_end_date(item.getPracPassDt());
                 break;
             }
-            // 여기까지 오면 현재날짜가 시험일정에 해당하지않는 것이므로 해당사항 없음으로 설정
+            /*
+            여기까지 오면 현재날짜가 시험일정에 해당하지않는 것이므로 해당사항 없음으로 설정
+            중복해서 설정하지만 일정이 1개일때 또는 여러개일때 모두 적용해야 한다. 비록 자원낭비가 있지만 일단 진행한다.
+            나중에 좀더 효율적인 방법을 찾아야 한다.
+             */
             dto.setLic_step("해당사항 없음");
             dto.setLic_end_date("-");
         }
 
-    }
-
-    /**
-     * 파라미터로 주어진 자격시험의 전체 회차중 현재 진행중인 회차를 구한다.
-     * @param items 자격시험의 전체 회차 리스트
-     * @return 현재 진행중인 회차를 나타내는 문자열, 예) "1회차 필기시험 접수중"
-     */
-    private String getCurrentStep(Items[] items){
-        /*
-        "docRegStartDt": "20220607",
-        "docRegEndDt": "20220610",
-        "docExamStartDt": "20220702",
-        "docExamEndDt": "20220722",
-        "docPassDt": "20220810",
-        "pracRegStartDt": "20220905",
-        "pracRegEndDt": "20220908",
-        "pracExamStartDt": "20221016",
-        "pracExamEndDt": "20221028",
-        "pracPassDt": "20221111"
-         */
-        // 현재날짜의 년월일 표현 예) "20221121"
-        String nowDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-//        if(nowDate.compareTo(items[0].getDocRegStartDt()) == -1 && Integer.valueOf(nowDate) - Integer.valueOf(items[0].getDocRegStartDt()) ){
-//
-//        }
-
-        return null;
     }
 
     /**
@@ -194,6 +175,28 @@ public class LicenseAPIService {
             ioe.printStackTrace();
         }
         return result;
+    }
+
+    public List<LicenseScheduleDTO> getLicenseSchedulesByCode(int licenseCode) {
+        LicenseInfoDTO lic_info = m_licenseAPIRepository.getLicenseInfo(licenseCode);
+        if(lic_info == null)
+            new ArrayList<LicenseScheduleDTO>(0);
+
+        List<LicenseScheduleDTO> sch_list = new ArrayList<LicenseScheduleDTO>(1);
+        try{
+            LicenseScheduleDTO sch = new LicenseScheduleDTO();
+            String tmp = callLicenseScheduleAPI(licenseCode);
+            ObjectMapper om = new ObjectMapper();
+            LicenseRawDataDTO jsonObj = om.readValue(tmp, LicenseRawDataDTO.class);
+            sch.setLicense_schedule_json(jsonObj);
+            sch.setLicense_title(lic_info.getLicense_name());
+            sch.setLicense_code(lic_info.getLicense_code());
+            appendViewData(sch);
+            sch_list.add(sch);
+        }catch (IOException ioe){
+            ioe.printStackTrace();
+        }
+        return sch_list;
     }
 
 /* WebClient 테스트 코드 : 안됨... ㅆ 아파치 HttpClient 쓴다.

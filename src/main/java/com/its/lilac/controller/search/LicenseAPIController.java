@@ -22,20 +22,31 @@ public class LicenseAPIController {
 
 
     /**
-     * 사용자가 검색한 자격증이름에 해당하는 자격증 종류를 반환한다.
+     * 사용자가 검색한 자격증이름에 해당하는 자격증 시험일정 리스트를 반환한다.
      * @param keyword 검색하려는 자격증 이름
-     * @return 자격증이름으로 검색된 자격증 목록
+     * @param model 뷰에 반환할 자격증 시험일정 리스트
+     * @return 자격증이름으로 검색된 자격증 시험일정 리스트
      */
     @GetMapping("/schedules-keyword")
-    public String getLicenseInfo(@RequestParam("keyword") String keyword, Model model){
+    public String getLicenseSchedulesByKeyword(@RequestParam("keyword") String keyword, Model model){
         // 입력문자열에 공백이 있으면 안되므로 trim 처리
         model.addAttribute("licSchedules", m_licenseAPIService.getLicenseSchedulesByKeyword(keyword.trim()));
         return "/license/license-template";
     }
 
-/*
-    @GetMapping("/schedules-code")
-    public List<LicenseScheduleDTO> getLicenseSchedules(@RequestParam("licenseCode") int licenseCode){
-        return m_licenseAPIService.getLicenseSchedules(licenseCode);
-    }*/
+    /**
+     * 사용자가 입력한 자격증분류코드에 해당하는 자격증 시험일정 리스트를 반환한다.
+     * 리스트형식이지만 실제로는 1개만 검색된다.
+     * @param licenseCode 자격증 코드
+     * @param model 뷰에 반환할 자격증 시험일정 리스트
+     * @return 자격증이름으로 검색된 자격증 시험일정 리스트
+     */
+    @GetMapping("/schedules-category")
+    public String getLicenseSchedulesByCode(@RequestParam("licenseCode") int licenseCode, Model model){
+        if(licenseCode <= 0) {
+            return "/license/license-template";
+        }
+        model.addAttribute("licSchedules", m_licenseAPIService.getLicenseSchedulesByCode(licenseCode));
+        return "/license/license-template";
+    }
 }

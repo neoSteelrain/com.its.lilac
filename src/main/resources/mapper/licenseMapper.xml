@@ -13,4 +13,10 @@
         from tbl_license
         where license_name like concat('%', #{keyword}, '%');
     </select>
+
+    <select id="licenseInfoByCode" parameterType="int" resultType="licenseInfo">
+        select license_code, license_name
+        from tbl_license
+        where license_code = #{licenseCode}
+    </select>
 </mapper>

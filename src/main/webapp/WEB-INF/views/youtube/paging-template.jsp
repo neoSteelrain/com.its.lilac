@@ -40,17 +40,17 @@
                         <li><a><i class="lni lni-chevron-left"></i></a></li>
                     </c:when>
                     <c:otherwise>
-                        <li><a href="javascript:searchYoutubeList('${videoPaging.page-1}')"><i class="lni lni-chevron-left"></i></a></li>
+                        <li><a href="javascript:searchYoutubeList('${videoPaging.page-1}',$('#slt-category').val())"><i class="lni lni-chevron-left"></i></a></li>
                     </c:otherwise>
                 </c:choose>
 
                 <c:forEach begin="${videoPaging.startPage}" end="${videoPaging.endPage}" var="i" step="1">
                     <c:choose>
                         <c:when test="${i eq videoPaging.page}">
-                            <li class="active"><a href="javascript:searchYoutubeList('${i}')">${i}</a></li>
+                            <li class="active"><a href="javascript:searchYoutubeList('${i}',$('#slt-category').val())">${i}</a></li>
                         </c:when>
                         <c:otherwise>
-                            <li><a href="javascript:searchYoutubeList('${i}')">${i}</a></li>
+                            <li><a href="javascript:searchYoutubeList('${i}',$('#slt-category').val())">${i}</a></li>
                         </c:otherwise>
                     </c:choose>
                 </c:forEach>
@@ -60,7 +60,7 @@
                         <li><a><i class="lni lni-chevron-right"></i></a></li>
                     </c:when>
                     <c:otherwise>
-                        <li><a href="javascript:searchYoutubeList('${videoPaging.page+1}')"><i class="lni lni-chevron-right"></i></a></li>
+                        <li><a href="javascript:searchYoutubeList('${videoPaging.page+1}',$('#slt-category').val())"><i class="lni lni-chevron-right"></i></a></li>
                     </c:otherwise>
                 </c:choose>
             </ul>

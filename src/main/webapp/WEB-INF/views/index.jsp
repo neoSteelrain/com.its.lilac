@@ -79,8 +79,9 @@
                         <div class="col-12">
                             <div class="search-input">
                                 <label for="slt-category"><i class="lni lni-grid-alt theme-color"></i></label>
-                                <select name="slt-category" id="slt-category">
+                                <select name="slt-category" id="slt-category" onchange="checkSelectedInput()">
                                     <option value="none" selected disabled>자격증 분류</option>
+                                    <option value="0">분류 미적용</option>
                                     <c:forEach items="${licenseList}" var="license">
                                         <option value="${license.license_code}">${license.license_name}</option>
                                     </c:forEach>
@@ -101,7 +102,7 @@
                         <div class="col-12">
                             <div class="search-btn button">
 <%--                                <button id="btn-search" class="btn" onclick="searchYoutubeList()"><i--%>
-                                    <button id="btn-search" class="btn" onclick="searchLicenseSchedulesByKeyword()"><i
+                                    <button id="btn-search" class="btn" onclick="searchBtnHandler()"><i
                                         class="lni lni-search-alt"></i> 검색
                                 </button>
                             </div>
@@ -122,7 +123,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">
-                        <h2 class="wow fadeInUp" data-wow-delay=".4s">자격증 시험일정 정보</h2>
+                        <h2 id="h-license" class="wow fadeInUp" data-wow-delay=".4s">자격증 시험일정 정보</h2>
                         <!-- <p class="wow fadeInUp" data-wow-delay=".6s"></p> -->
                     </div>
                 </div>
@@ -162,29 +163,6 @@
                             <!-- End List Title -->
                             <!-- Start Single List -->
                             <div id="div-lic-schedules" class="single-item-list">
-<%--                                <div class="row align-items-center">--%>
-<%--                                    <div class="col-lg-7 col-md-7 col-12">--%>
-<%--                                        <div class="item-image">--%>
-<%--                                            <img src="../../resources/images/qnet-logo.gif" alt="#" height="72" width="106">--%>
-<%--                                            <div class="content">--%>
-<%--                                                <h3 class="title"><a href="javascript:void(0)">Brand New Iphone 11 Pro--%>
-<%--                                                    Maxfdfsdfffffffffffffdfsfdsfsffsdffffff</a></h3>--%>
-<%--                                                <span class="price">$800</span>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </div>--%>
-<%--                                    <div class="col-lg-2 col-md-2 col-12">--%>
-<%--                                        <p>2023-2-12</p>--%>
-<%--                                    </div>--%>
-<%--                                    <div class="col-lg-2 col-md-2 col-12">--%>
-<%--                                        <p>아니오</p>--%>
-<%--                                    </div>--%>
-<%--                                    <div class="col-lg-1 col-md-1 col-12 align-right">--%>
-<%--                                        <ul class="action-btn">--%>
-<%--                                            <li><a href="javascript:void(0)"><i class="lni lni-plus"></i></a></li>--%>
-<%--                                        </ul>--%>
-<%--                                    </div>--%>
-<%--                                </div>--%>
                             </div>
                             <!-- End Single List -->
                         </div>
@@ -572,7 +550,7 @@
 </a>
 
 <!-- ========================= JS here ========================= -->
-<script src="/resources/js/bootstrap.bundle.js"></script>
+<script src="/resources/js/bootstrap.bundle.min.js"></script>
 <script src="/resources/js/jQuery-3-6-1.js"></script>
 <script src="/resources/js/wow.min.js"></script>
 <script src="/resources/js/tiny-slider.js"></script>
@@ -621,9 +599,9 @@
      * - 참고한 사이트 주소 : https://backstreet-programmer.tistory.com/105
      * @param offsetParam 이동할 페이지번호
      */
-    const searchYoutubeList = (offsetParam) => {
+    const searchYoutubeList = (offsetParam, category) => {
         const m_keyword = $('#ipt-keyword').val();
-        if (m_keyword == "")
+        if (m_keyword == "" && category <= 0)
             return;
 
         $.ajax({
@@ -631,7 +609,7 @@
             url: "/search/youtube/keyword-search",
             dataType: "text",
             data: {
-                keyword: m_keyword,
+                keyword: (category > 0) ? $('#slt-category option:selected').text() : m_keyword,
                 offset: offsetParam,
                 videoCount: "8"
             },
@@ -647,6 +625,37 @@
                 alert(errMsg.toString());
             }
         });
+    }
+
+    /**
+     * 사용자가 자격증분류를 선택여부에 따라 자격증 이름입력창을 활성화/비활성화 시킨다.
+     * 검색은 분류검색 아니면 키워드 검색 2가지 중 1개만 지원하기 때문이다.
+     */
+    const checkSelectedInput = () => {
+        const m_selected_category = $('#slt-category').val();
+        if(m_selected_category > 0){
+            $('#ipt-keyword').prop("disabled", true);
+        }else{
+            $('#ipt-keyword').prop("disabled", false);
+        }
+    }
+
+    /**
+     * 자격증분류 선택여부에 따라 분류검색 또는 키워드 검색을 선택해서 검색을 진행한다.
+     */
+    const searchBtnHandler = () => {
+        const m_selected_category = $('#slt-category').val();
+        if(m_selected_category > 0){
+            searchLicenseSchedulesByCategory();
+            searchYoutubeList('1', m_selected_category);
+        }else{
+            searchLicenseSchedulesByKeyword();
+            searchYoutubeList('1', '0');
+        }
+
+        // 자격증 시험일정 태그로 스크롤 이동
+        let offset = $("#h-license").offset();
+        $("html, body").animate({scrollTop: offset.top},500);
     }
 
     /**
@@ -676,21 +685,28 @@
         });
     }
 
-    // const searchLicenseSchedules = () => {
-    //     $.ajax({
-    //         type:"get",
-    //         url:"/search/license/license-schedules",
-    //         data:{
-    //             licenseCode : 1320
-    //         },
-    //         dataType: "json",
-    //         success:(result)=>{
-    //             console.log(result);
-    //         },
-    //         error:(errMsg)=>{
-    //             console.log("error : " + errMsg);
-    //         }
-    //     });
-    // }
+    /**
+     * 사용자가 분류검색을 선택하였을 때 종목코드로 검색하는 함수
+     */
+    const searchLicenseSchedulesByCategory = () => {
+        const m_category = $('#slt-category').val();
+
+        $.ajax({
+            type:"get",
+            url:"/search/license/schedules-category",
+            data:{
+                licenseCode : m_category
+            },
+            dataType: "text",
+            success:(result)=>{
+                let html = jQuery('<div>').html(result);
+                let contents = html.find("div#lic-schedule-template").html();
+                $('#div-lic-schedules').html(contents);
+            },
+            error:(errMsg)=>{
+                alert(errMsg.toString());
+            }
+        });
+    }
 </script>
 </html>
