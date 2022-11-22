@@ -48,10 +48,10 @@
                     <div class="product-images">
                         <main id="gallery">
                             <div class="main-img">
-                                <img src="../../../resources/images/default-profile.jpg" id="current" alt="#">
+                                <img src="../../../resources/images/default-profile.jpg" id="img-preView" alt="#">
                             </div>
                             <div>
-                                <input type="file" class="form-control">
+                                <input id="ipt-profile" type="file" class="form-control" accept="image/*" onchange="setProfile()">
                             </div>
                         </main>
                     </div>
@@ -60,30 +60,33 @@
                     <div class="product-info">
                         <h2 class="title">회원가입</h2>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="ipt-nicaname" placeholder="닉네임을 입력하세요">
-                            <label for="ipt-nicaname">닉네임</label>
+                            <input type="text" class="form-control" id="ipt-nickname" maxlength="20" placeholder="닉네임을 입력하세요" onblur="checkNickname()">
+                            <label id="lbl-nickname" for="ipt-nickname">닉네임</label>
+                            <span id="nickNameNotice"></span>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="ipt-email" placeholder="name@example.com">
+                            <input type="email" class="form-control" id="ipt-email" maxlength="30" placeholder="name@example.com" onblur="checkDuplicatedEmail()">
                             <label for="ipt-email">이메일</label>
+                            <span id="emailNotice"></span>
                         </div>
                         <div class="form-floating mb-3">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" id="ipt-address" placeholder="주소는 시군구까지만 입력받습니다"
                                        aria-label="Recipient's username" aria-describedby="btn-address" readonly>
+                                <span id="addressNotice"></span>
                                 <button type="button" class="btn btn-outline-secondary" id="btn-address"
                                         onclick="execDaumPostcode()">주소찾기
                                 </button>
                             </div>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" id="ipt-password"
-                                   placeholder="영문 대소문자 숫자 특수기호 포함 6-18자리">
+                            <input type="password" class="form-control" id="ipt-password" maxlength="20"
+                                   placeholder="영문 대소문자 숫자 특수기호 포함 6-20자리" onblur="checkPassword()">
                             <label for="ipt-password">비밀번호</label>
+                            <span id="pwNotice"></span>
                         </div>
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control is-invalid" id="ipt-confirmPw" placeholder="">
-                            <label for="ipt-confirmPw">비밀번호 확인</label>
+                        <div class="button">
+                            <button type="button" id="btn-registration" class="btn" onclick="requestRegistration()">회원가입</button>
                         </div>
 
                         <div class="social-share">
@@ -108,6 +111,7 @@
 </section>
 
 <script src="../../../resources/js/bootstrap.bundle.min.js"></script>
+<script src="../../../resources/js/jQuery-3-6-1.js"></script>
 <script src="../../../resources/js/wow.min.js"></script>
 <script src="../../../resources/js/tiny-slider.js"></script>
 <script src="../../../resources/js/glightbox.min.js"></script>
@@ -132,7 +136,7 @@
                 }
 
                 // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-                if(data.userSelectedType === 'R'){
+                /*if(data.userSelectedType === 'R'){
                     // 법정동명이 있을 경우 추가한다. (법정리는 제외)
                     // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
                     if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
@@ -147,11 +151,11 @@
                         extraAddr = ' (' + extraAddr + ')';
                     }
                     // 조합된 참고항목을 해당 필드에 넣는다.
-                    //document.getElementById("sample6_extraAddress").value = extraAddr;
+                    document.getElementById("sample6_extraAddress").value = extraAddr;
 
                 } else {
                     document.getElementById("sample6_extraAddress").value = '';
-                }
+                }*/
 
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
                 //document.getElementById('sample6_postcode').value = data.zonecode;
@@ -162,7 +166,144 @@
             }
         }).open();
     }
-</script>
 
+    const setProfile = () => {
+        const files = $('#ipt-profile').prop('files');
+        //const files = $('#ipt-profile')[0].files;
+        if(files == undefined)
+            return;
+
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            $('#img-preView').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(files[0]);
+    }
+
+    const checkNickname = () => {
+        const nickname = $('#ipt-nickname').val();
+        const nickNameNotice = $('#nickNameNotice');
+        if(nickname == ""){
+            nickNameNotice.css('color', 'red');
+            nickNameNotice.html('이름은 필수입력입니다.');
+        }else{
+            nickNameNotice.css('color', 'white');
+            nickNameNotice.html('');
+        }
+    }
+
+    const checkAddress = () => {
+        const address = $('#ipt-address').val();
+        const addressNotice = $('#addressNotice');
+        if(address == ""){
+            addressNotice.css('color', 'red');
+            addressNotice.html('주소는 필수입력입니다.');
+            return false;
+        }else{
+            addressNotice.css('color', 'white');
+            addressNotice.html('');
+            return true;
+        }
+    }
+
+    const checkPassword = () => {
+        const pwTag = $('#ipt-password');
+        const pw = $('#ipt-password').val();
+        const pwNotice = $('#pwNotice');
+        const pwRegex = /^[A-Za-z\d\[\]\{\}\/\(\)\.\?\<\>!@#$%^&*=+-]{6,20}$/;
+        if(pw != "" && !pwRegex.test(pw)) {
+            pwNotice.css('color', 'red');
+            pwNotice.html('비밀번호는 영문대,소문자,숫자,특수기호 조합으로 6-20자 입니다.');
+            pwTag.val('');
+            pwTag.focus();
+        }else{
+            pwNotice.css('color', 'red');
+            pwNotice.html('');
+        }
+    }
+
+    const checkDuplicatedEmail = () => {
+        console.log($('#ipt-email').val());
+        const emailInput = $('#ipt-email').val();
+        const emailNotice = $('#emailNotice');
+        const emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}(.[a-zA-Z]{2,3})?$/u;
+        if (emailInput == "") {
+            emailNotice.css('color', 'red');
+            emailNotice.html('이메일 주소는 필수입력입니다')
+            return;
+        }
+        if (!emailRegex.test(emailInput)) {
+            emailNotice.css('color', 'red');
+            emailNotice.html('이메일 주소형식에 어긋납니다')
+            $('#ipt-email').focus();
+            return;
+        }
+
+        $.ajax({
+            type: "get",
+            url: "/user/checkDuplicatedEmail",
+            datatype: "text",
+            data: {
+                email: emailInput
+            },
+            success: function (result) {
+                if (result == "YES") {
+                    emailNotice.css('color', 'red');
+                    emailNotice.html('중복된 이메일입니다.')
+                } else if (result == "NO") {
+                    emailNotice.css('color', 'green');
+                    emailNotice.html('사용가능한 이메일입니다.')
+                }
+            },
+            error: function () {
+                alert('이메일 검증에서 오류가 발생하였습니다');
+            }
+        });
+    }
+
+    const requestRegistration = () => {
+        /*
+         주소입력창은 readonly로 설정해놔서 아직 적당하게 처리할 이벤트는 못찾았다.
+         그래서 일단 회원가입을 진행할때 주소입력이 있는지 없는지 체크해준다.
+         */
+        if(!checkAddress())
+            return;
+
+        let signUpFrmData = new FormData();
+        signUpFrmData.append("member_nickname", $('#ipt-nickname').val());
+        signUpFrmData.append("member_email", $('#ipt-email').val());
+        signUpFrmData.append("member_address", $('#ipt-address').val());
+        signUpFrmData.append("member_password", $('#ipt-password').val());
+        // 프로필이미지 처리
+        const profileImgs = $('#ipt-profile').prop('files');
+        if (profileImgs.length > 0) {
+            // 프로필이미지는 1개만 선택가능하므로 0번째 값만 읽어온다.
+            signUpFrmData.append("profileFile", profileImgs[0]);
+        }
+        // 회원가입 버튼 비활성화
+        $("#btn-registration").prop("disabled", true);
+        $.ajax({
+            type: "post",
+            enctype: "multipart/form-data",
+            url: "/user/registration",
+            data: signUpFrmData,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                // 회원가입 버튼 활성화
+                $("#btn-registration").prop("disabled", false);
+                if(result == "YES")
+                    alert("회원가입이 완료되었습니다.");
+                else if(result == "NO")
+                    alert("회원가입에 실패하였습니다.");
+                //location.href = "/member/sign-in";
+            },
+            error: function (e) {
+                alert("회원가입과정에서 오류가 발생하였습니다.");
+                $("#btn-registration").prop("disabled", false);
+            }
+        });
+    }
+</script>
 </body>
 </html>
