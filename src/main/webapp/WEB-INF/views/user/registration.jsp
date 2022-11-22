@@ -296,7 +296,7 @@
                     alert("회원가입이 완료되었습니다.");
                 else if(result == "NO")
                     alert("회원가입에 실패하였습니다.");
-                //location.href = "/member/sign-in";
+                location.href = "/user/log-in";
             },
             error: function (e) {
                 alert("회원가입과정에서 오류가 발생하였습니다.");

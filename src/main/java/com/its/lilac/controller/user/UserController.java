@@ -19,6 +19,11 @@ public class UserController {
         return "/user/registration";
     }
 
+    @GetMapping("/log-in")
+    public String logIn(){
+        return "/user/log-in";
+    }
+
     @GetMapping("/checkDuplicatedEmail")
     @ResponseBody
     public String checkDuplicatedEmail(@RequestParam("email") String email){

@@ -136,10 +136,10 @@
                         <div class="login-button">
                             <ul>
                                 <li id="li-login">
-                                    <a href="#"><i class="lni lni-enter"></i> 로그인</a>
+                                    <a href="/user/log-in"><i class="lni lni-enter"></i> 로그인</a>
                                 </li>
                                 <li id="li-registration">
-                                    <a href="../user/registration"><i class="lni lni-user"></i> 회원가입</a>
+                                    <a href="/user/registration"><i class="lni lni-user"></i> 회원가입</a>
                                 </li>
                             </ul>
                         </div>
