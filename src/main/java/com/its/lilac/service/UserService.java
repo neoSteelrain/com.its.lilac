@@ -57,4 +57,8 @@ public class UserService {
             throw new LilacException(ioe);
         }
     }
+
+    public UserDTO userLogIn(String email, String password) {
+         return m_userRepository.userLogIn(email, password);
+    }
 }

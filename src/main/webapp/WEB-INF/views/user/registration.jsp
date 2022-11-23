@@ -223,7 +223,6 @@
     }
 
     const checkDuplicatedEmail = () => {
-        console.log($('#ipt-email').val());
         const emailInput = $('#ipt-email').val();
         const emailNotice = $('#emailNotice');
         const emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}(.[a-zA-Z]{2,3})?$/u;

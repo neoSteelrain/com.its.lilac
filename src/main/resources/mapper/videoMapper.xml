@@ -41,7 +41,7 @@
                tv.video_channel_title,
                tv.video_search_count
         from tbl_recommended_video trv inner join tbl_youtube tv
-        on trv.youtube_video_id = tv.video_id;
+        on trv.video_id = tv.video_id;
     </select>
 
     <select id="videoInfo" parameterType="String" resultType="video">

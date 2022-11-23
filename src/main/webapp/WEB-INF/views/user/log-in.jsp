@@ -45,16 +45,16 @@
             <div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-12">
                 <div class="form-head">
                     <h4 class="title">로그인</h4>
-                    <form action="#!" method="post">
+                    <form id="frm-login" action="/user/log-in" method="post">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="ipt-email" maxlength="20"
-                                   placeholder="이메일을 입력하세요">
+                            <input type="text" class="form-control" id="ipt-email" name="email" maxlength="20"
+                                   placeholder="이메일을 입력하세요" onblur="checkEmail()">
                             <label for="ipt-email">이메일</label>
                             <span id="emailNotice"></span>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" id="ipt-password" maxlength="30"
-                                   placeholder="name@example.com">
+                            <input type="password" class="form-control" id="ipt-password" name="password" maxlength="30"
+                                   placeholder="name@example.com" onblur="checkPassword()">
                             <label for="ipt-password">비밀번호</label>
                             <span id="pwNotice"></span>
                         </div>
@@ -73,7 +73,7 @@
                             </div>
                         </div>
                         <div class="button">
-                            <button type="button" class="btn">로그인</button>
+                            <button id="btn-logIn" type="button" class="btn" onclick="requestLogIn()">로그인</button>
                         </div>
                         <div class="alt-option">
                             <span>외부 아이디로 로그인</span>
@@ -99,5 +99,74 @@
 <script src="../../../resources/js/tiny-slider.js"></script>
 <script src="../../../resources/js/glightbox.min.js"></script>
 <script src="../../../resources/js/main.js"></script>
+<script>
+    const checkEmail = () =>{
+        const emailInput = $('#ipt-email').val();
+        const emailNotice = $('#emailNotice');
+        const emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}(.[a-zA-Z]{2,3})?$/u;
+        if (emailInput == "") {
+            emailNotice.css('color', 'red');
+            emailNotice.html('이메일 주소는 필수입력입니다')
+            return false;
+        }
+        if (!emailRegex.test(emailInput)) {
+            emailNotice.css('color', 'red');
+            emailNotice.html('이메일 주소형식에 어긋납니다')
+            $('#ipt-email').focus();
+            return false;
+        }
+        emailNotice.css('color', 'white');
+        emailNotice.html('');
+        return true;
+    }
+
+    const checkPassword = () => {
+        const pwTag = $('#ipt-password');
+        const pw = $('#ipt-password').val();
+        const pwNotice = $('#pwNotice');
+        const pwRegex = /^[A-Za-z\d\[\]\{\}\/\(\)\.\?\<\>!@#$%^&*=+-]{6,20}$/;
+        if(pw != "" && !pwRegex.test(pw)) {
+            pwNotice.css('color', 'red');
+            pwNotice.html('비밀번호는 영문대,소문자,숫자,특수기호 조합으로 6-20자 입니다.');
+            pwTag.val('');
+            pwTag.focus();
+            return false;
+        }else{
+            pwNotice.css('color', 'red');
+            pwNotice.html('');
+            return false;
+        }
+        return true;
+    }
+
+    const requestLogIn = () => {
+        if(!checkEmail() && !checkPassword())
+            return;
+
+        $('#frm-login').submit();
+
+        // const m_email = $('#ipt-email').val();
+        // const m_password = $('#ipt-password').val();
+        //
+        // $.ajax({
+        //     type:"post",
+        //     url:"",
+        //     dataType:"text",
+        //     data:{
+        //         email: m_email,
+        //         password: m_password
+        //     },
+        //     success:(result)=>{
+        //         if(result == "YES"){
+        //
+        //         }
+        //     },
+        //     error:()=>{
+        //         alert("로그인 처리중 에러가 발생하였습니다.");
+        //     }
+        // });
+    }
+
+</script>
 </body>
 </html>

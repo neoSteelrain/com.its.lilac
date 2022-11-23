@@ -35,7 +35,7 @@ public class YoutubeAPIService {
    
     public List<VideoDTO> searchKeyword(String keyword, int offset, int videoCount) {
         return getVideoListPaging(keyword, offset, videoCount);
-//        return getSearchList(keyword, offset, videoCount); // 테스트용 주석
+//        return getSearchList(keyword, offset, videoCount); // 테스트용 주석, 아직 배치 구현이 안되었으므로 시작할때는 주석처리하고 위의 메서드로 실행해줘야 한다.
     }
 
     /**

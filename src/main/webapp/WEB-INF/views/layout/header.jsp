@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <meta charset="utf-8"/>
@@ -48,6 +49,7 @@
                         </button>
                         <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
                             <ul id="nav" class="navbar-nav ms-auto">
+
                                 <li class="nav-item">
                                     <a class=" active dd-menu collapsed" href="javascript:void(0)"
                                        data-bs-toggle="collapse" data-bs-target="#submenu-1-1"
@@ -59,108 +61,73 @@
                                         <li class="nav-item"><a href="index3.html">Home Version 3</a></li>
                                     </ul> -->
                                 </li>
-                                <!-- <li class="nav-item">
-                                    <a href="category.html" aria-label="Toggle navigation">Categories</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class=" dd-menu collapsed" href="javascript:void(0)"
-                                        data-bs-toggle="collapse" data-bs-target="#submenu-1-3"
-                                        aria-controls="navbarSupportedContent" aria-expanded="false"
-                                        aria-label="Toggle navigation">Listings</a>
-                                    <ul class="sub-menu collapse" id="submenu-1-3">
-                                        <li class="nav-item"><a href="item-listing-grid.html">Ad Grid</a></li>
-                                        <li class="nav-item"><a href="item-listing-list.html">Ad Listing</a></li>
-                                        <li class="nav-item"><a href="item-details.html">Ad Details</a></li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a class=" dd-menu collapsed" href="javascript:void(0)"
-                                        data-bs-toggle="collapse" data-bs-target="#submenu-1-4"
-                                        aria-controls="navbarSupportedContent" aria-expanded="false"
-                                        aria-label="Toggle navigation">Pages</a>
-                                    <ul class="sub-menu mega-menu collapse" id="submenu-1-4">
-                                        <li class="single-block">
-                                            <ul>
-                                                <li class="mega-menu-title">Essential Pages</li>
-                                                <li class="nav-item"><a href="about-us.html">About Us</a></li>
-                                                <li class="nav-item"><a href="item-details.html">Ads Details</a></li>
-                                                <li class="nav-item"><a href="post-item.html">Ads Post</a></li>
-                                                <li class="nav-item"><a href="pricing.html">Pricing Table</a></li>
-                                                <li class="nav-item"><a href="registration.html">Sign Up</a></li>
-                                                <li class="nav-item"><a href="login.html">Sign In</a></li>
-                                                <li class="nav-item"><a href="contact.html">Contact Us</a></li>
-                                                <li class="nav-item"><a href="faq.html">FAQ</a></li>
-                                                <li class="nav-item"><a href="404.html">Error Page</a></li>
-                                                <li class="nav-item"><a href="mail-success.html">Mail Success</a>
-                                                </li>
-                                                <li class="nav-item"><a href="coming-soon.html">Comming Soon</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="single-block">
-                                            <ul>
-                                                <li class="mega-menu-title">Dashboard</li>
-                                                <li class="nav-item"><a href="dashboard.html">Account Overview</a>
-                                                </li>
-                                                <li class="nav-item"><a href="profile-settings.html">My Profile</a>
-                                                </li>
-                                                <li class="nav-item"><a href="my-items.html">My Ads</a></li>
-                                                <li class="nav-item"><a href="favourite-items.html">Favorite Ads</a>
-                                                </li>
-                                                <li class="nav-item"><a href="post-item.html">Ad post</a></li>
-                                                <li class="nav-item"><a href="bookmarked-items.html">Bookmarked Ad</a>
-                                                </li>
-                                                <li class="nav-item"><a href="messages.html">Messages</a></li>
-                                                <li class="nav-item"><a href="delete-account.html">Close account</a>
-                                                </li>
-                                                <li class="nav-item"><a href="invoice.html">Invoice</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a class=" dd-menu collapsed" href="javascript:void(0)"
-                                        data-bs-toggle="collapse" data-bs-target="#submenu-1-5"
-                                        aria-controls="navbarSupportedContent" aria-expanded="false"
-                                        aria-label="Toggle navigation">Blog</a>
-                                    <ul class="sub-menu collapse" id="submenu-1-5">
-                                        <li class="nav-item"><a href="blog-grid-sidebar.html">Blog Grid Sidebar</a>
-                                        </li>
-                                        <li class="nav-item"><a href="blog-single.html">Blog Single</a></li>
-                                        <li class="nav-item"><a href="blog-single-sidebar.html">Blog Single
-                                                Sibebar</a></li>
-                                    </ul>
-                                </li> -->
+
                             </ul>
                         </div> <!-- navbar collapse -->
                         <div class="login-button">
                             <ul>
-                                <li id="li-login">
-                                    <a href="/user/log-in"><i class="lni lni-enter"></i> 로그인</a>
-                                </li>
-                                <li id="li-registration">
-                                    <a href="/user/registration"><i class="lni lni-user"></i> 회원가입</a>
-                                </li>
+                                <c:choose>
+                                    <c:when test="${sessionScope.member_id != null && sessionScope.member_id >= 1}">
+                                        <li>
+                                            <span class="text">${sessionScope.member_nickname}</span>
+                                        </li>
+                                        <li id="li-login">
+                                            <a href="/user/log-in"><i class="lni lni-exit"></i> 로그아웃</a>
+                                        </li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li id="li-login">
+                                            <a href="/user/log-in"><i class="lni lni-enter"></i> 로그인</a>
+                                        </li>
+                                        <li id="li-registration">
+                                            <a href="/user/registration"><i class="lni lni-user"></i> 회원가입</a>
+                                        </li>
+                                    </c:otherwise>
+                                </c:choose>
                             </ul>
                         </div>
-
-                        <div class="dropdown">
-                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">회원메뉴
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <button class="dropdown-item" type="button">회원정보</button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" type="button">강의노트</button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" type="button">로그아웃</button>
-                                </li>
-                            </ul>
-                        </div>
-
+                        <!-- JSTL 로 만들면 드랍다운 안됨... 일단 보류 -->
+                        <%--<c:choose>
+                            <c:when test="${sessionScope.member_id != null && sessionScope.member_id > 1}">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">회원메뉴
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <button class="dropdown-item" type="button">회원정보</button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item" type="button">강의노트</button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item" type="button">로그아웃</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </c:when>
+                            <c:when test="${sessionScope.member_id != null && sessionScope.member_id == 1}">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">관리자 메뉴
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <button class="dropdown-item" type="button">회원관리</button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item" type="button">추천영상</button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item" type="button">DB배치작업</button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item" type="button">로그아웃</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </c:when>
+                        </c:choose>--%>
                         <!-- <div class="button header-button">
                             <a href="post-item.html" class="btn">Post an Ad</a>
                         </div> -->
