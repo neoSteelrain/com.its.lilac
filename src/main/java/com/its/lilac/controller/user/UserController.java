@@ -53,6 +53,7 @@ public class UserController {
         httpSession.setAttribute(SESSION_KEY.MEMBER_ID, userDTO.getMember_id());
         httpSession.setAttribute(SESSION_KEY.MEMBER_EMAIL, userDTO.getMember_email());
         httpSession.setAttribute(SESSION_KEY.MEMBER_NICKNAME, userDTO.getMember_nickname());
+        httpSession.setAttribute(SESSION_KEY.MEMBER_GRADE, userDTO.getMember_grade());
 
         return "/index";
     }
@@ -61,5 +62,10 @@ public class UserController {
     public String userLogOut(HttpSession httpSession){
         httpSession.invalidate();
         return "/index";
+    }
+
+    @GetMapping("/user-info")
+    public String userInfo(@RequestParam("memberId") String memberId){
+        return "/user/user-info";
     }
 }

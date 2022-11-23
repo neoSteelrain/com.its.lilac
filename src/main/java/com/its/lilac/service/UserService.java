@@ -27,6 +27,7 @@ public class UserService {
     }
 
     public boolean userRegistration(UserDTO userDTO) {
+        userDTO.setMember_grade("B"); // 일반회원은 B등급이다.
         saveProfile(userDTO);
         return m_userRepository.userRegistration(userDTO) > 0;
     }

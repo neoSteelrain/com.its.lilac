@@ -16,4 +16,5 @@ public class UserDTO {
     private String member_address;
     private Timestamp member_date;
     private MultipartFile profileFile;
+    private String member_grade;
 }

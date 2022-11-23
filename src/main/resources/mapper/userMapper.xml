@@ -13,8 +13,9 @@
                                member_desc,
                                member_password,
                                member_profile,
-                               member_address) values
-            (#{member_nickname}, #{member_email}, #{member_desc}, #{member_password}, #{member_profile}, #{member_address});
+                               member_address,
+                               member_grade) values
+            (#{member_nickname}, #{member_email}, #{member_desc}, #{member_password}, #{member_profile}, #{member_address}, #{member_grade});
     </insert>
 
     <select id="userLogIn" parameterType="String" resultType="user">
@@ -25,7 +26,8 @@
                member_password,
                member_profile,
                member_address,
-               member_date
+               member_date,
+               member_grade
         from tbl_member
         where member_email = #{email} and member_password = #{password};
     </select>

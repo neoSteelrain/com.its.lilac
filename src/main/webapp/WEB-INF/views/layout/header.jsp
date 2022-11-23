@@ -49,27 +49,35 @@
                         </button>
                         <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
                             <ul id="nav" class="navbar-nav ms-auto">
-
                                 <li class="nav-item">
-                                    <a class=" active dd-menu collapsed" href="javascript:void(0)"
-                                       data-bs-toggle="collapse" data-bs-target="#submenu-1-1"
-                                       aria-controls="navbarSupportedContent" aria-expanded="false"
-                                       aria-label="Toggle navigation">관리자</a>
-                                    <!-- <ul class="sub-menu collapse" id="submenu-1-1">
-                                        <li class="nav-item"><a href="index.html">회원관리</a></li>
-                                        <li class="nav-item active"><a href="index2.html"></a></li>
-                                        <li class="nav-item"><a href="index3.html">Home Version 3</a></li>
-                                    </ul> -->
+                                    <%--                                    <a class=" active dd-menu collapsed" href="/user/log-in"--%>
+                                    <%--                                        data-bs-toggle="collapse" data-bs-target="#submenu-1-1"--%>
+                                    <%--                                        aria-controls="navbarSupportedContent" aria-expanded="false"--%>
+                                    <%--                                        aria-label="Toggle navigation">회원관리</a>--%>
+<%--                                    <a href="/user/user-info?memberId=2">회원관리</a>--%>
                                 </li>
+                                <c:choose>
+                                    <!-- 관리자 로그인 일 경우 -->
+                                    <c:when test="${sessionScope.member_grade != null && sessionScope.member_grade == 'A'}">
+                                    </c:when>
+                                    <!-- 일반회원 일 경우 -->
+                                    <c:when test="${sessionScope.member_grade != null && sessionScope.member_grade == 'B'}">
+                                    </c:when>
+                                    <c:otherwise>
 
+                                    </c:otherwise>
+                                </c:choose>
                             </ul>
                         </div> <!-- navbar collapse -->
                         <div class="login-button">
                             <ul>
                                 <c:choose>
-                                    <c:when test="${sessionScope.member_id != null && sessionScope.member_id >= 1}">
+                                    <c:when test="${sessionScope.member_grade != null}">
                                         <li>
                                             <span class="text">${sessionScope.member_nickname}</span>
+                                        </li>
+                                        <li>
+                                            <a href="/user/user-info?memberId=3">회원관리</a>
                                         </li>
                                         <li id="li-login">
                                             <a href="/user/log-in"><i class="lni lni-exit"></i> 로그아웃</a>
@@ -86,50 +94,8 @@
                                 </c:choose>
                             </ul>
                         </div>
-                        <!-- JSTL 로 만들면 드랍다운 안됨... 일단 보류 -->
-                        <%--<c:choose>
-                            <c:when test="${sessionScope.member_id != null && sessionScope.member_id > 1}">
-                                <div class="dropdown">
-                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">회원메뉴
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <button class="dropdown-item" type="button">회원정보</button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item" type="button">강의노트</button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item" type="button">로그아웃</button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </c:when>
-                            <c:when test="${sessionScope.member_id != null && sessionScope.member_id == 1}">
-                                <div class="dropdown">
-                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">관리자 메뉴
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <button class="dropdown-item" type="button">회원관리</button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item" type="button">추천영상</button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item" type="button">DB배치작업</button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item" type="button">로그아웃</button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </c:when>
-                        </c:choose>--%>
                         <!-- <div class="button header-button">
-                            <a href="post-item.html" class="btn">Post an Ad</a>
+                        <a href="post-item.html" class="btn">Post an Ad</a>
                         </div> -->
                     </nav> <!-- navbar -->
                 </div>
@@ -143,5 +109,11 @@
 <script src="../../../resources/js/tiny-slider.js"></script>
 <script src="../../../resources/js/glightbox.min.js"></script>
 <script src="../../../resources/js/main.js"></script>
+<script>
+    const requestUserInfo = () => {
+        console.log("FFFFFFF");
+        location.href = "/user/user-info?memberId=" + ${sessionScope.member_id};
+    }
+</script>
 </body>
 </html>
