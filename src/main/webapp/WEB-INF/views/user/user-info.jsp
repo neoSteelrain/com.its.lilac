@@ -38,7 +38,6 @@
         </div>
     </div>
 </div>
-
 <section class="dashboard section">
     <div class="container">
         <div class="row">

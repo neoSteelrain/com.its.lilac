@@ -56,31 +56,31 @@
                                     <%--                                        aria-label="Toggle navigation">회원관리</a>--%>
 <%--                                    <a href="/user/user-info?memberId=2">회원관리</a>--%>
                                 </li>
-                                <c:choose>
-                                    <!-- 관리자 로그인 일 경우 -->
-                                    <c:when test="${sessionScope.member_grade != null && sessionScope.member_grade == 'A'}">
-                                    </c:when>
-                                    <!-- 일반회원 일 경우 -->
-                                    <c:when test="${sessionScope.member_grade != null && sessionScope.member_grade == 'B'}">
-                                    </c:when>
-                                    <c:otherwise>
+<%--                                <c:choose>--%>
+<%--                                    <!-- 관리자 로그인 일 경우 -->--%>
+<%--                                    <c:when test="${sessionScope.member_grade == 'A'}">--%>
+<%--                                    </c:when>--%>
+<%--                                    <!-- 일반회원 일 경우 -->--%>
+<%--                                    <c:when test="${sessionScope.member_grade == 'B'}">--%>
+<%--                                    </c:when>--%>
+<%--                                    <c:otherwise>--%>
 
-                                    </c:otherwise>
-                                </c:choose>
+<%--                                    </c:otherwise>--%>
+<%--                                </c:choose>--%>
+                                <c:if test="${sessionScope.member_grade == 'B'}" var="result">
+                                    <a href="/user/user-info?memberId=${sessionScope.member_id}"><i class="lni lni-dashboard"></i> 회원정보</a>
+                                </c:if>
                             </ul>
                         </div> <!-- navbar collapse -->
                         <div class="login-button">
                             <ul>
                                 <c:choose>
-                                    <c:when test="${sessionScope.member_grade != null}">
+                                    <c:when test="${sessionScope.member_nickname != null}">
                                         <li>
                                             <span class="text">${sessionScope.member_nickname}</span>
                                         </li>
-                                        <li>
-                                            <a href="/user/user-info?memberId=3">회원관리</a>
-                                        </li>
                                         <li id="li-login">
-                                            <a href="/user/log-in"><i class="lni lni-exit"></i> 로그아웃</a>
+                                            <a href="/"><i class="lni lni-exit"></i> 로그아웃</a>
                                         </li>
                                     </c:when>
                                     <c:otherwise>
