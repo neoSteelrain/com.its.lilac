@@ -1,11 +1,14 @@
 package com.its.lilac.controller;
 
 import com.its.lilac.common.RESPONSEBODY_RESULT_STING;
+import com.its.lilac.datamodel.LectureNoteDTO;
 import com.its.lilac.service.LectureNoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/lecture")
@@ -16,8 +19,10 @@ public class LectureNoteController {
 
 
     @GetMapping("/lecture-note-list")
-    public String getLectureNoteList(@RequestParam("memberId") String memberId, Model model){
+    public String getLectureNoteList(@RequestParam("memberId") long memberId, Model model){
+        List<LectureNoteDTO> noteList = m_lectureNoteService.getLectureNoteList(memberId);
         model.addAttribute("memberId", memberId);
+        model.addAttribute("noteList", noteList);
         return "/lecture/lecture-note";
     }
 

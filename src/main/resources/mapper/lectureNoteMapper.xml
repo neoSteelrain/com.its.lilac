@@ -7,4 +7,16 @@
         insert into tbl_lecture_note(lct_note_title, lct_desc, member_id) values
         (#{lecTitle},#{lecContents},#{memberId});
     </insert>
+
+    <select id="getLectureNoteList" parameterType="long" resultType="lectureNote">
+        select lct_note_id,
+               lct_note_title,
+               lct_desc,
+               lct_note_date,
+               lct_progress,
+               member_id,
+               license_schedule_id
+        from tbl_lecture_note
+        where member_id = #{memberId};
+    </select>
 </mapper>

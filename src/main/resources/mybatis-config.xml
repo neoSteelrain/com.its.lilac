@@ -6,5 +6,6 @@
         <typeAlias type="com.its.lilac.datamodel.VideoDTO" alias="video"></typeAlias>
         <typeAlias type="com.its.lilac.datamodel.LicenseInfoDTO" alias="licenseInfo"></typeAlias>
         <typeAlias type="com.its.lilac.datamodel.UserDTO" alias="user"></typeAlias>
+        <typeAlias type="com.its.lilac.datamodel.LectureNoteDTO" alias="lectureNote"></typeAlias>
     </typeAliases>
 </configuration>

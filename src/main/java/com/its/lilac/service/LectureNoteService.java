@@ -1,8 +1,11 @@
 package com.its.lilac.service;
 
+import com.its.lilac.datamodel.LectureNoteDTO;
 import com.its.lilac.repository.LectureNoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class LectureNoteService {
@@ -12,5 +15,9 @@ public class LectureNoteService {
 
     public boolean addLectureNote(long memberId, String lecTitle, String lecContents) {
         return m_lectureNoteRepository.addLectureNote(memberId, lecTitle, lecContents) > 0;
+    }
+
+    public List<LectureNoteDTO> getLectureNoteList(long memberId) {
+        return m_lectureNoteRepository.getLectureNoteList(memberId);
     }
 }
