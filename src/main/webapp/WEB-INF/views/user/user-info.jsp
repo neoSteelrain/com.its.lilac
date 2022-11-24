@@ -47,8 +47,8 @@
                 <div class="dashboard-sidebar">
                     <div class="user-image">
                         <img src="https://via.placeholder.com/300x300" alt="#">
-                        <h3>유저 닉네임
-                            <span><a href="javascript:void(0)"> username</a></span>
+                        <h3>회원 닉네임
+                            <span>${userInfo.member_nickname}</span>
                         </h3>
                     </div>
                     <div class="dashboard-menu">

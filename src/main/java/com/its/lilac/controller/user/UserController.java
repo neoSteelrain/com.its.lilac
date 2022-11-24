@@ -56,13 +56,13 @@ public class UserController {
         httpSession.setAttribute(SESSION_KEY.MEMBER_NICKNAME, userDTO.getMember_nickname());
         httpSession.setAttribute(SESSION_KEY.MEMBER_GRADE, userDTO.getMember_grade());
 
-        return "/index";
+        return "redirect:/";
     }
 
     @GetMapping("log-out")
     public String userLogOut(HttpSession httpSession){
         httpSession.invalidate();
-        return "/index";
+        return "redirect:/";
     }
 
     @GetMapping("/user-info")

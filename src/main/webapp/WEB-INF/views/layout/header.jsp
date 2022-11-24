@@ -72,7 +72,7 @@
                                         <a href="/user/user-info?memberId=${sessionScope.member_id}"><i class="lni lni-dashboard"></i> 회원정보</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/user/user-info?memberId=${sessionScope.member_id}"><i class="lni lni-dashboard"></i> 강의노트</a>
+                                        <a href="/lecture/lecture-note-list?memberId=${sessionScope.member_id}"><i class="lni lni-dashboard"></i> 강의노트</a>
                                     </li>
                                 </c:if>
                             </ul>
@@ -85,7 +85,7 @@
                                             <span class="text">${sessionScope.member_nickname}</span>
                                         </li>
                                         <li id="li-login">
-                                            <a href="/"><i class="lni lni-exit"></i> 로그아웃</a>
+                                            <a href="/user/log-out"><i class="lni lni-exit"></i> 로그아웃</a>
                                         </li>
                                     </c:when>
                                     <c:otherwise>
