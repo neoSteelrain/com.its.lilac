@@ -52,7 +52,7 @@ public class UserService {
             if(!saveDir.exists()){
                 saveDir.mkdir();
             }
-            String contextPath = saveDir.getAbsolutePath() + "\\" + storedFileName;
+            String contextPath = saveDir.getPath() + "\\" + storedFileName;
             profile.transferTo(new File(contextPath));
         }catch(IOException ioe){
             throw new LilacException(ioe);
@@ -61,5 +61,13 @@ public class UserService {
 
     public UserDTO userLogIn(String email, String password) {
          return m_userRepository.userLogIn(email, password);
+    }
+
+    public UserDTO getUserInfo(String memberId) {
+        return m_userRepository.getUserInfo(memberId);
+    }
+
+    public boolean updateUserInfo(UserDTO userDTO) {
+        return m_userRepository.updateUserInfo(userDTO) > 0;
     }
 }

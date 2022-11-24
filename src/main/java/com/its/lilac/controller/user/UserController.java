@@ -6,6 +6,7 @@ import com.its.lilac.datamodel.UserDTO;
 import com.its.lilac.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -65,7 +66,20 @@ public class UserController {
     }
 
     @GetMapping("/user-info")
-    public String userInfo(@RequestParam("memberId") String memberId){
+    public String userInfo(@RequestParam("memberId") String memberId, Model model){
+        UserDTO userDTO = m_userService.getUserInfo(memberId);
+        model.addAttribute("userInfo", userDTO);
         return "/user/user-info";
+    }
+
+    @PostMapping("/user-info-update")
+    @ResponseBody
+    public String userInfoUpdate(@ModelAttribute UserDTO userDTO){
+
+        userDTO.setMember_address(userDTO.getMember_address());
+        userDTO.setMember_nickname(userDTO.getMember_nickname().trim());
+        userDTO.setMember_desc(userDTO.getMember_desc().trim());
+
+        return m_userService.updateUserInfo(userDTO) ? RESPONSEBODY_RESULT_STING.YES : RESPONSEBODY_RESULT_STING.NO;
     }
 }

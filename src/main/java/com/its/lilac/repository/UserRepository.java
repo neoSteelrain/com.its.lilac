@@ -28,4 +28,12 @@ public class UserRepository {
         param.put("password", password);
         return m_sql.selectOne("User.userLogIn", param);
     }
+
+    public UserDTO getUserInfo(String memberId) {
+        return m_sql.selectOne("User.userInfo", memberId);
+    }
+
+    public int updateUserInfo(UserDTO userDTO) {
+        return m_sql.update("User.updateUserInfo", userDTO);
+    }
 }

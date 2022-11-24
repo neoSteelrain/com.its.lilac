@@ -68,7 +68,12 @@
 <%--                                    </c:otherwise>--%>
 <%--                                </c:choose>--%>
                                 <c:if test="${sessionScope.member_grade == 'B'}" var="result">
-                                    <a href="/user/user-info?memberId=${sessionScope.member_id}"><i class="lni lni-dashboard"></i> 회원정보</a>
+                                    <li class="nav-item">
+                                        <a href="/user/user-info?memberId=${sessionScope.member_id}"><i class="lni lni-dashboard"></i> 회원정보</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/user/user-info?memberId=${sessionScope.member_id}"><i class="lni lni-dashboard"></i> 강의노트</a>
+                                    </li>
                                 </c:if>
                             </ul>
                         </div> <!-- navbar collapse -->
