@@ -1,6 +1,6 @@
 package com.its.lilac.controller;
 
-import com.its.lilac.datamodel.LicenseDTO;
+import com.its.lilac.datamodel.LicenseCategoryDTO;
 import com.its.lilac.datamodel.VideoDTO;
 import com.its.lilac.service.LicenseAPIService;
 import com.its.lilac.service.YoutubeAPIService;
@@ -32,7 +32,7 @@ public class HomeController {
         // 추천영상 목록세팅
         model.addAttribute("videoList", getRecommendedVideoList());
         // 검색분류 세팅
-        model.addAttribute("licenseList", getLicenseList());
+        model.addAttribute("licenseList", getLicenseCategoryList());
         return "/index";
     }
 
@@ -45,10 +45,10 @@ public class HomeController {
     }
 
     /**
-     * DB에 등록된 자격증 목록을 가져온다.
+     * DB에 등록된 자격증 목록을 종목코드,자격증이름 쌍으로 가져온다.
      * @return 자격증 리스트
      */
-    private List<LicenseDTO> getLicenseList(){
-        return m_licenseAPIService.getLicenseList();
+    private List<LicenseCategoryDTO> getLicenseCategoryList(){
+        return m_licenseAPIService.getLicenseCategoryList();
     }
 }

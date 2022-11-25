@@ -1,5 +1,6 @@
 package com.its.lilac.repository;
 
+import com.its.lilac.datamodel.LicenseCategoryDTO;
 import com.its.lilac.datamodel.LicenseDTO;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ public class LicenseAPIRepository {
     @Autowired
     private SqlSessionTemplate m_sql;
 
-    public List<LicenseDTO> getLicenseInfoList() {
+    public List<LicenseCategoryDTO> getLicenseCategoryList() {
         return m_sql.selectList("License.licenseCodeList");
     }
 

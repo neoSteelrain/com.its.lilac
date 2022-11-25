@@ -2,7 +2,11 @@ package com.its.lilac.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.its.lilac.common.APIEndPointManager;
+import com.its.lilac.datamodel.Items;
+import com.its.lilac.datamodel.LicenseCategoryDTO;
 import com.its.lilac.datamodel.LicenseDTO;
+import com.its.lilac.datamodel.LicenseScheduleJsonDTO;
+import com.its.lilac.exception.LicenseException;
 import com.its.lilac.repository.LicenseAPIRepository;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -37,11 +41,11 @@ public class LicenseAPIService {
     private String m_apiKey;
 
     /**
-     * DB에 있는 모든 자격증 종목코드를 반환한다.
+     * DB에 있는 모든 자격증 종목코드, 자격증이름을 반환한다.
      * @return 종목코드를 포함한 자격증정보 리스트
      */
-    public List<LicenseDTO> getLicenseList() {
-        return m_licenseAPIRepository.getLicenseInfoList();
+    public List<LicenseCategoryDTO> getLicenseCategoryList() {
+        return m_licenseAPIRepository.getLicenseCategoryList();
     }
 
     /**
@@ -52,57 +56,55 @@ public class LicenseAPIService {
     public List<LicenseDTO> getLicenseSchedulesByKeyword(String keyword) {
         /*
         - 작업순서
-        1. 키워드로 검색된 모든 자격증코드를 가져온다.
+        1. 키워드로 검색된 모든 자격증코드, 이름를 가져온다.
         2. 각각의 자격증코드에 해당하는 자격증 시험일정을 API를 통해 가져온다.
         3. 자격증 시험일정 리스트를 만들어서 반환한다.
-         */
+        */
+
+        // 자격증이름,코드만 들어있으며 아직 json 값은 없다.
         List<LicenseDTO> lic_list = m_licenseAPIRepository.getLicenseInfoList(keyword);
         if(lic_list == null)
             new ArrayList<LicenseDTO>(0);
-
 
         ObjectMapper om = new ObjectMapper();
         try {
             // 자격증 갯수만큼 API호출해서 시험일정을 가져온다.
             for (LicenseDTO lic : lic_list) {
-                LicenseScheduleDTO sch = new LicenseScheduleDTO();
                 String tmp = callLicenseScheduleAPI(lic.getLicense_code());
 //                ObjectMapper om = new ObjectMapper();
-                LicenseRawDataDTO jsonObj = om.readValue(tmp, LicenseRawDataDTO.class);
-                sch.setLicense_schedule_json(jsonObj);
-                sch.setLicense_title(lic.getLicense_name());
-                sch.setLicense_code(lic.getLicense_code());
-                appendViewData(sch);
-                sch_list.add(sch);
+                lic.setLicense_schedule_json(om.readValue(tmp, LicenseScheduleJsonDTO.class));
+                lic.setLicense_name(lic.getLicense_name());
+                lic.setLicense_code(lic.getLicense_code());
+                appendViewData(lic);
             }
         }catch (IOException ioe){
-            ioe.printStackTrace();
+            throw new LicenseException("키워드로 자격증을 검색하는 도중 예외가 발생하였습니다.", ioe);
         }
-        return sch_list;
+        return lic_list;
     }
 
-    public List<LicenseScheduleDTO> getLicenseSchedulesByCode(int licenseCode) {
+    public List<LicenseDTO> getLicenseSchedulesByCode(int licenseCode) {
+        /*
+        종목코드만 있어도 API호출은 가능하지만 API응답에는 자격증이름이 없기 때문에 DB에서 이름을 가져온다.
+         */
         LicenseDTO lic_info = m_licenseAPIRepository.getLicenseInfo(licenseCode);
         if(lic_info == null)
-            new ArrayList<LicenseScheduleDTO>(0);
+            new ArrayList<LicenseDTO>(0);
 
-        List<LicenseScheduleDTO> sch_list = new ArrayList<LicenseScheduleDTO>(1);
+        // 종목코드로 검색한 자격증 시험일정으로 LicenseDTO에 값을 세팅한다.
+        List<LicenseDTO> lic_list = new ArrayList<>(1);
         ObjectMapper om = new ObjectMapper();
         try{
             // API호출해서 시험일정을 리스트로 가져온다.
-            LicenseScheduleDTO sch = new LicenseScheduleDTO();
             String tmp = callLicenseScheduleAPI(licenseCode);
 //            ObjectMapper om = new ObjectMapper();
-            LicenseRawDataDTO jsonObj = om.readValue(tmp, LicenseRawDataDTO.class);
-            sch.setLicense_schedule_json(jsonObj);
-            sch.setLicense_title(lic_info.getLicense_name());
-            sch.setLicense_code(lic_info.getLicense_code());
-            appendViewData(sch);
-            sch_list.add(sch);
+            lic_info.setLicense_schedule_json(om.readValue(tmp, LicenseScheduleJsonDTO.class));
+            appendViewData(lic_info);
+            lic_list.add(lic_info);
         }catch (IOException ioe){
-            ioe.printStackTrace();
+            throw new LicenseException("종목코드로 자격증을 검색하는 도중 예외가 발생하였습니다",ioe);
         }
-        return sch_list;
+        return lic_list;
     }
 
     /*
@@ -116,15 +118,18 @@ public class LicenseAPIService {
 
     /**
      * 화면에 출력할 진행단계, 종료일자를 추가한다.
-     * @param dto 추가할 DTO
+     * 국가자격시험일정 API호출로 가져온 json 데이터에서 현재날짜를 기준으로
+     * 지금 진행중인 시험일정이 있는지 검사해서 LicenseDTO에 세팅한다.
+     * @param dto 진행단계를 세팅할 DTO
      */
-    private void appendViewData(LicenseScheduleDTO dto){
+    private void appendViewData(LicenseDTO dto){
         List<Items> items = dto.getLicense_schedule_json().getBody().getItems();
         // 문자열보다는 숫자로 하는 비교가 더 확실하므로 자격증 날짜와 비교할 현재날짜를 int로 구한다.
         int now = Integer.parseInt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        // 현재 시험이 어느단계 인지 알아내는 부분, 어차피 하나밖에 해당이 안되기 때문에 1개라도 걸리면 바로 종료
+        dto.setLic_desc(String.format("총 %d 회차 진횅",items.size()));
+        // 현재 시험이 어느단계 인지 알아내는 부분
         for(Items item : items){
-            dto.setLic_desc(item.getDescription());
+            // 필기시험 단계 검사
             if(Integer.parseInt(item.getDocRegStartDt()) <= now && Integer.parseInt(item.getDocRegEndDt()) >= now ){
                 dto.setLic_step(item.getImplSeq() + "회차 필기시험 접수중");
                 dto.setLic_end_date(item.getDocRegEndDt());
@@ -140,6 +145,7 @@ public class LicenseAPIService {
                 dto.setLic_end_date(item.getDocPassDt());
                 continue;
             }
+            // 실기시험 단계 검사
             if(Integer.parseInt(item.getPracRegStartDt()) <= now && Integer.parseInt(item.getPracRegEndDt()) >= now ){
                 dto.setLic_step(item.getImplSeq() + "회차 실기시험 접수중");
                 dto.setLic_end_date(item.getPracRegEndDt());
@@ -157,8 +163,6 @@ public class LicenseAPIService {
             }
             /*
             여기까지 오면 현재날짜가 시험일정에 해당하지않는 것이므로 해당사항 없음으로 설정
-            중복해서 설정하지만 일정이 1개일때 또는 여러개일때 모두 적용해야 한다. 비록 자원낭비가 있지만 일단 진행한다.
-            나중에 좀더 효율적인 방법을 찾아야 한다.
              */
             dto.setLic_step("해당사항 없음");
             dto.setLic_end_date("-");
