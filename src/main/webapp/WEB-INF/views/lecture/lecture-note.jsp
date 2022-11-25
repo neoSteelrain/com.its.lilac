@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -29,6 +31,29 @@
     <link rel="stylesheet" href="../../../resources/css/tiny-slider.css"/>
     <link rel="stylesheet" href="../../../resources/css/glightbox.min.css"/>
     <link rel="stylesheet" href="../../../resources/css/main.css"/>
+    <script>
+        const removeLectureNote = (noteId) => {
+            console.log("removeLectureNote : " + noteId);
+            $.ajax({
+                type:"get",
+                url:"/lecture/remove-lecture-note",
+                data:{
+                    lectureNoteId:noteId
+                },
+                datatype: "text",
+                success:(result)=>{
+                    if(result == "YES"){
+                        location.href = "lecture-note-list?memberId=" + ${memberId};
+                    }else if(result == "NO"){
+                        alert("강의노트 삭제에 실패하였습니다.");
+                    }
+                },
+                error:(errmsg)=> {
+                    alert(errmsg);
+                }
+            });
+        }
+    </script>
 </head>
 <body>
 <div class="preloader">
@@ -77,7 +102,7 @@
                         </nav>
                         <!-- Start Items Area -->
                         <div class="my-items">
-                            <!-- Start Item List Title -->
+                            <!-- 강의노트 리스트 제목들 시작 -->
                             <div class="item-list-title">
                                 <div class="row align-items-center">
                                     <div class="col-lg-7 col-md-7 col-12">
@@ -87,35 +112,40 @@
                                         <p>만든날짜</p>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-12 align-right">
-                                        <p>삭제</p>
+                                        <p>관리</p>
                                     </div>
                                 </div>
                             </div>
-                            <!-- End List Title -->
-                            <!-- Start Single List -->
-                            <div class="single-item-list">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-7 col-md-7 col-12">
-                                        <div class="item-image">
-                                            <img src="https://via.placeholder.com/100x100" alt="#">
-                                            <div class="content">
-                                                <h3 class="title"><a href="javascript:void(0)">강의노트 제목</a></h3>
-                                                <span class="price">강의노트 설명</span>
+                            <!-- 강의노트 리스트 제목들 끝 -->
+                            <!-- 강의노트 출력 시작 -->
+                            <div id="div-lectureNoteList" >
+                                <c:forEach items="${noteList}" var="note">
+                                    <div class="single-item-list">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-7 col-md-7 col-12">
+                                                <div class="item-image">
+                                                    <img src="https://via.placeholder.com/100x100" alt="#">
+                                                    <div class="content">
+                                                        <h3 class="title"><a href="javascript:void(0)">${note.lct_note_title}</a></h3>
+                                                        <span class="price">${note.lct_desc}</span>
+                                                        <input id="ipt-noteId" type="hidden" value="${note.lct_note_id}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-12">
+                                                <p><fmt:formatDate value="${note.lct_note_date}" pattern="yyyy-MM-dd"></fmt:formatDate></p>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-12 align-right">
+                                                <ul class="action-btn">
+                                                    <li><a href="javascript:void(0)"><i class="lni lni-pencil"></i></a></li>
+                                                    <li><a href="javascript:removeLectureNote('${note.lct_note_id}');"><i class="lni lni-trash"></i></a></li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 col-md-2 col-12">
-                                        <p>2022-10-11</p>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-12 align-right">
-                                        <ul class="action-btn">
-                                            <li><a href="javascript:void(0)"><i class="lni lni-pencil"></i></a></li>
-                                            <li><a href="javascript:void(0)"><i class="lni lni-trash"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                </c:forEach>
                             </div>
-                            <!-- End Single List -->
+                            <!-- 강의노트 출력 끝 -->
 
                             <!-- Pagination -->
                             <div class="pagination left">

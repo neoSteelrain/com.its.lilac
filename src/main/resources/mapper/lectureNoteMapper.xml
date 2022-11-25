@@ -19,4 +19,13 @@
         from tbl_lecture_note
         where member_id = #{memberId};
     </select>
+
+    <delete id="removeLectureNote" parameterType="long">
+        delete from tbl_lecture_note
+        where lct_note_id = #{lct_note_id};
+    </delete>
+
+    <update id="addLicenseSchedule" parameterType="java.util.Map">
+        
+    </update>
 </mapper>

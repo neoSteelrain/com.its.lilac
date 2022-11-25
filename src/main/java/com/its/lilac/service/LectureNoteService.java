@@ -20,4 +20,12 @@ public class LectureNoteService {
     public List<LectureNoteDTO> getLectureNoteList(long memberId) {
         return m_lectureNoteRepository.getLectureNoteList(memberId);
     }
+
+    public boolean removeLectureNote(long lectureNoteId) {
+        return m_lectureNoteRepository.removeLectureNote(lectureNoteId) > 0;
+    }
+
+    public boolean addLicenseSchedule(long licScheduleId, long lctNoteId) {
+        return m_lectureNoteRepository.addLicenseSchedule(licScheduleId, lctNoteId) > 0;
+    }
 }

@@ -3,7 +3,8 @@ package com.its.lilac.datamodel;
 import lombok.Data;
 
 @Data
-public class LicenseRawDataDTO {
+public class LicenseScheduleJsonDTO {
     private Body body;
     private Header header;
 }
+

@@ -26,4 +26,15 @@ public class LectureNoteRepository {
     public List<LectureNoteDTO> getLectureNoteList(long memberId) {
         return m_sql.selectList("Lecture.getLectureNoteList", memberId);
     }
+
+    public int removeLectureNote(long lectureNoteId) {
+        return m_sql.delete("Lecture.removeLectureNote", lectureNoteId);
+    }
+
+    public int addLicenseSchedule(long licScheduleId, long lctNoteId) {
+        Map<String, Long> param = new HashMap<>(2);
+        param.put("licScheduleId", licScheduleId);
+        param.put("lctNoteId",lctNoteId);
+        return m_sql.insert("Lecture.addLicenseSchedule", param);
+    }
 }

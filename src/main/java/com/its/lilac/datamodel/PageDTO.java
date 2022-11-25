@@ -9,3 +9,12 @@ public class PageDTO {
     private int startPage; // 시작 페이지
     private int endPage; // 끝 페이지
 }
+
+/*
+// 진행단계
+    private String lic_step;
+    // 종료일자
+    private String lic_end_date;
+    // 자격증 설명
+    private String lic_desc;
+ */

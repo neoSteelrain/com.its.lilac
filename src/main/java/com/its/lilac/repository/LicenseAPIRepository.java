@@ -1,6 +1,6 @@
 package com.its.lilac.repository;
 
-import com.its.lilac.datamodel.LicenseInfoDTO;
+import com.its.lilac.datamodel.LicenseDTO;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,15 +13,15 @@ public class LicenseAPIRepository {
     @Autowired
     private SqlSessionTemplate m_sql;
 
-    public List<LicenseInfoDTO> getLicenseList() {
-        return m_sql.selectList("License.licenseList");
+    public List<LicenseDTO> getLicenseInfoList() {
+        return m_sql.selectList("License.licenseCodeList");
     }
 
-    public List<LicenseInfoDTO> getLicenseList(String keyword){
+    public List<LicenseDTO> getLicenseInfoList(String keyword){
         return m_sql.selectList("License.licenseListByKeyword", keyword);
     }
 
-    public LicenseInfoDTO getLicenseInfo(int licenseCode) {
+    public LicenseDTO getLicenseInfo(int licenseCode) {
         return m_sql.selectOne("License.licenseInfoByCode", licenseCode);
     }
 }

@@ -1,4 +1,4 @@
-package com.its.lilac.controller;
+package com.its.lilac.controller.lecture;
 
 import com.its.lilac.common.RESPONSEBODY_RESULT_STING;
 import com.its.lilac.datamodel.LectureNoteDTO;
@@ -34,6 +34,21 @@ public class LectureNoteController {
         String m_lecTitle = lecTitle.trim();
         String m_lecContents = lecContents.trim();
         boolean isAdded = m_lectureNoteService.addLectureNote(memberId, m_lecTitle, m_lecContents);
+        return isAdded ? RESPONSEBODY_RESULT_STING.YES : RESPONSEBODY_RESULT_STING.NO;
+    }
+
+    @GetMapping("/remove-lecture-note")
+    @ResponseBody
+    public String removeLectureNote(@RequestParam("lectureNoteId") long lectureNoteId){
+        boolean isRemoved = m_lectureNoteService.removeLectureNote(lectureNoteId);
+        return  isRemoved ? RESPONSEBODY_RESULT_STING.YES : RESPONSEBODY_RESULT_STING.NO;
+    }
+
+    @GetMapping("/add-schedule")
+    @ResponseBody
+    public String addLicenseSchedule(@RequestParam("license_schedule_id") long licScheduleId,
+                              @RequestParam("lct_note_id") long lctNoteId){
+        boolean isAdded = m_lectureNoteService.addLicenseSchedule(licScheduleId, lctNoteId);
         return isAdded ? RESPONSEBODY_RESULT_STING.YES : RESPONSEBODY_RESULT_STING.NO;
     }
 }

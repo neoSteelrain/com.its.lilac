@@ -1,6 +1,6 @@
 package com.its.lilac.controller;
 
-import com.its.lilac.datamodel.LicenseInfoDTO;
+import com.its.lilac.datamodel.LicenseDTO;
 import com.its.lilac.datamodel.VideoDTO;
 import com.its.lilac.service.LicenseAPIService;
 import com.its.lilac.service.YoutubeAPIService;
@@ -48,7 +48,7 @@ public class HomeController {
      * DB에 등록된 자격증 목록을 가져온다.
      * @return 자격증 리스트
      */
-    private List<LicenseInfoDTO> getLicenseList(){
+    private List<LicenseDTO> getLicenseList(){
         return m_licenseAPIService.getLicenseList();
     }
 }
