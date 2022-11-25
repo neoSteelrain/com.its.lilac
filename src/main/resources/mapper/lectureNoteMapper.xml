@@ -25,7 +25,10 @@
         where lct_note_id = #{lct_note_id};
     </delete>
 
-    <update id="addLicenseSchedule" parameterType="java.util.Map">
-        
-    </update>
+    <insert id="addLicenseSchedule" parameterType="java.util.Map">
+        insert into ref_tbl_lecture_youtube(lct_note_id, member_id, video_id) values
+        (#{lectureNoteId}),
+        (#{memberId}),
+        (#{videoId});
+    </insert>
 </mapper>

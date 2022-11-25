@@ -28,4 +28,8 @@ public class LectureNoteService {
     public boolean addLicenseSchedule(long licScheduleId, long lctNoteId) {
         return m_lectureNoteRepository.addLicenseSchedule(licScheduleId, lctNoteId) > 0;
     }
+
+    public boolean addVideoToLicenseNote(String videoId, long lectureNoteId, long memberId) {
+        return m_lectureNoteRepository.addVideoToLicenseNote(videoId, lectureNoteId, memberId) > 0;
+    }
 }

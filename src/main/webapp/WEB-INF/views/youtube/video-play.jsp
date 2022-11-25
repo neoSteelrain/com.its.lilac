@@ -69,6 +69,11 @@
                                         ${video.video_search_count}
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="javascript:addVideoToLectureNote(0)">
+                                        <i class="lni lni-plus"></i>
+                                    </a>
+                                </li>
                             </ul>
                             <p>${video.video_desc}</p>
                         </div>
@@ -85,5 +90,10 @@
 <script src="../../../resources/js/tiny-slider.js"></script>
 <script src="../../../resources/js/glightbox.min.js"></script>
 <script src="../../../resources/js/main.js"></script>
+<script>
+    const addVideoToLectureNote = () => {
+
+    }
+</script>
 </body>
 </html>
