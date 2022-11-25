@@ -6,6 +6,7 @@ import com.its.lilac.datamodel.Items;
 import com.its.lilac.datamodel.LicenseCategoryDTO;
 import com.its.lilac.datamodel.LicenseDTO;
 import com.its.lilac.datamodel.LicenseScheduleJsonDTO;
+import com.its.lilac.exception.LicenseAPIException;
 import com.its.lilac.exception.LicenseException;
 import com.its.lilac.repository.LicenseAPIRepository;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -55,13 +56,14 @@ public class LicenseAPIService {
      */
     public List<LicenseDTO> getLicenseSchedulesByKeyword(String keyword) {
         /*
+        TODO : 배치작업으로 처리하면 필요없는 작업이지만 아직 배치작업구현이 안되었으므로 일단 검색할때 조건검사로 대체한다. 나중에 바꿔야 한다.
         - 작업순서
-        1. 키워드로 검색된 모든 자격증코드, 이름를 가져온다.
-        2. 각각의 자격증코드에 해당하는 자격증 시험일정을 API를 통해 가져온다.
+        1. 키워드로 검색된 모든 자격증코드,이름,공공데이터 API호출 응답 json 값들을 가져온다.
+        2. license_schedule_json 필드가 null 인지 검사해서
+           null 이라면 처음검색되는 자격증이므로 API를 호출하여 응답 json을 DB에 update 해주고 json 값 처리를 진행한다.
+           null 이 아니라면 DB에서 가져온 값으로 json 값처리를 진행한다.
         3. 자격증 시험일정 리스트를 만들어서 반환한다.
         */
-
-        // 자격증이름,코드만 들어있으며 아직 json 값은 없다.
         List<LicenseDTO> lic_list = m_licenseAPIRepository.getLicenseInfoList(keyword);
         if(lic_list == null)
             new ArrayList<LicenseDTO>(0);
@@ -70,11 +72,15 @@ public class LicenseAPIService {
         try {
             // 자격증 갯수만큼 API호출해서 시험일정을 가져온다.
             for (LicenseDTO lic : lic_list) {
-                String tmp = callLicenseScheduleAPI(lic.getLicense_code());
-//                ObjectMapper om = new ObjectMapper();
-                lic.setLicense_schedule_json(om.readValue(tmp, LicenseScheduleJsonDTO.class));
-                lic.setLicense_name(lic.getLicense_name());
-                lic.setLicense_code(lic.getLicense_code());
+                // license_schedule_json 필드가 null 이면 API호출 하고 응답 json을 DB에 update 한다.
+                if(lic.getLicense_schedule_json() == null){
+                    String jsonString = callLicenseScheduleAPI(lic.getLicense_code());
+                    boolean isUpdated = m_licenseAPIRepository.updateLicenseJson(lic.getLicense_code(), jsonString) > 0;
+                    if(!isUpdated)
+                        new ArrayList<LicenseDTO>(0);
+
+                    lic.setLicense_schedule_json(om.readValue(jsonString, LicenseScheduleJsonDTO.class));
+                }
                 appendViewData(lic);
             }
         }catch (IOException ioe){
@@ -85,20 +91,30 @@ public class LicenseAPIService {
 
     public List<LicenseDTO> getLicenseSchedulesByCode(int licenseCode) {
         /*
-        종목코드만 있어도 API호출은 가능하지만 API응답에는 자격증이름이 없기 때문에 DB에서 이름을 가져온다.
+        TODO : 배치작업으로 처리하면 필요없는 작업이지만 아직 배치작업구현이 안되었으므로 일단 검색할때 조건검사로 대체한다. 나중에 바꿔야 한다.
+        앞서 구현된 키워드검색과 비슷한 로직으로 처리한다.
          */
+
+        //종목코드만 있어도 API호출은 가능하지만 API응답에는 자격증이름이 없기 때문에 DB에서 이름을 가져와야 한다.
         LicenseDTO lic_info = m_licenseAPIRepository.getLicenseInfo(licenseCode);
         if(lic_info == null)
             new ArrayList<LicenseDTO>(0);
 
-        // 종목코드로 검색한 자격증 시험일정으로 LicenseDTO에 값을 세팅한다.
+        /*
+         license_schedule_json 필드가 null 이라면 처음 검색되는 자격증이므로 API호출로 값을 가져오지만
+         null 아닌경우에는 이미 호출되어서 값이 세팅되어 있으므로 DB에서 바로 가져오고 리턴한다.
+         */
         List<LicenseDTO> lic_list = new ArrayList<>(1);
         ObjectMapper om = new ObjectMapper();
         try{
-            // API호출해서 시험일정을 리스트로 가져온다.
-            String tmp = callLicenseScheduleAPI(licenseCode);
-//            ObjectMapper om = new ObjectMapper();
-            lic_info.setLicense_schedule_json(om.readValue(tmp, LicenseScheduleJsonDTO.class));
+            if(lic_info.getLicense_schedule_json() == null){
+                String jsonString = callLicenseScheduleAPI(licenseCode);
+                boolean isUpdated = m_licenseAPIRepository.updateLicenseJson(licenseCode, jsonString) > 0;
+                if(!isUpdated)
+                    new ArrayList<LicenseDTO>(0);
+
+                lic_info.setLicense_schedule_json(om.readValue(jsonString, LicenseScheduleJsonDTO.class));
+            }
             appendViewData(lic_info);
             lic_list.add(lic_info);
         }catch (IOException ioe){
@@ -107,19 +123,10 @@ public class LicenseAPIService {
         return lic_list;
     }
 
-    /*
-    1. 종목코드에 해당하는 자료가 시험일정 테이블에 있는지 검사한다.
-    2. 있다면 DB에서 가져오고 없다면 API를 호출해서 DB에 insert 한다.
-    3. API로 새로가져온 종목코드에 해당하는 시험일정을 리스트에 추가해서 컨트롤러에 반환한다.
-     */
-//    private void saveLicenseSchedule(List<LicenseScheduleDTO> scheduleDTOList){
-//
-//    }
-
     /**
-     * 화면에 출력할 진행단계, 종료일자를 추가한다.
-     * 국가자격시험일정 API호출로 가져온 json 데이터에서 현재날짜를 기준으로
-     * 지금 진행중인 시험일정이 있는지 검사해서 LicenseDTO에 세팅한다.
+     * 화면에 출력할 정보들을 세팅한다.
+     * 출력에 필요한 정보들 : 회차 진행수, 진행단계, 종료일자를 추가한다.
+     * 현재날짜를 기준으로 지금 진행중인 시험일정이 있는지 검사해서 LicenseDTO에 세팅한다.
      * @param dto 진행단계를 세팅할 DTO
      */
     private void appendViewData(LicenseDTO dto){
@@ -180,11 +187,20 @@ public class LicenseAPIService {
         HttpGet httpGet = new HttpGet(APIEndPointManager.LICENSE_SCHEDULE_API_URL_GET);
         List<NameValuePair> nvp = new ArrayList<>(6);
         nvp.add(new BasicNameValuePair("serviceKey", m_apiKey));
+        // 1페이지 결과수
         nvp.add(new BasicNameValuePair("numOfRows", "50")); // 50개 까지가 API가 정한 한계수치, 1년 동안 50번 이상 치루는 시험은 없을것이다...
         nvp.add(new BasicNameValuePair("pageNo", "1"));
         nvp.add(new BasicNameValuePair("dataFormat", "json"));
         // 적용년도는 올해로 세팅한다.
         nvp.add(new BasicNameValuePair("implYy", String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
+        /*
+        자격구분코드
+        T : 국가기술자격
+        C : 과정평가형
+        W : 일학습병행자격
+        S : 국가전문자격
+        정보처리기사 같은 정보기술 분야는 국가기술자격에 속하므로 T로 설정한다.
+         */
         nvp.add(new BasicNameValuePair("qualgbCd", "T"));
         // 종목코드 세팅
         nvp.add(new BasicNameValuePair("jmCd", String.valueOf(licenseCode)));
@@ -194,19 +210,18 @@ public class LicenseAPIService {
                     .build();
             httpGet.setUri(uri);
         }catch (URISyntaxException urie){
-            urie.printStackTrace();
+            throw new RuntimeException("공공데이터 API 호출시 에외 발생", urie);
         }
 
         try(CloseableHttpClient httpClient = HttpClients.createDefault()){
             try(ClassicHttpResponse response = httpClient.execute(httpGet)){
                 HttpEntity entity = response.getEntity();
-//                System.out.println(EntityUtils.toString(entity));
                 result = EntityUtils.toString(entity);
             }catch (ParseException pe){
-                pe.printStackTrace();
+                throw new RuntimeException("공공데이터 API 호출시 에외 발생", pe);
             }
         }catch (IOException ioe){
-            ioe.printStackTrace();
+            throw new RuntimeException("공공데이터 API 호출시 에외 발생", ioe);
         }
         return result;
     }

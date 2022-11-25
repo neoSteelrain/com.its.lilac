@@ -9,14 +9,20 @@
     </select>
 
     <select id="licenseListByKeyword" parameterType="String" resultType="licenseInfo">
-        select license_code, license_name
+        select license_code, license_name, license_schedule_json
         from tbl_license
         where license_name like concat('%', #{keyword}, '%');
     </select>
 
     <select id="licenseInfoByCode" parameterType="int" resultType="licenseInfo">
-        select license_code, license_name
+        select license_code, license_name, license_schedule_json
         from tbl_license
         where license_code = #{licenseCode}
     </select>
+
+    <update id="updateLicenseJson" parameterType="java.util.Map">
+        update tbl_license
+        set license_schedule_json = #{jsonString}
+        where license_code = #{lic_code};
+    </update>
 </mapper>
