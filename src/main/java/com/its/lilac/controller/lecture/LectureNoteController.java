@@ -1,16 +1,20 @@
 package com.its.lilac.controller.lecture;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.its.lilac.common.RESPONSEBODY_RESULT_STING;
 import com.its.lilac.common.SESSION_KEY;
 import com.its.lilac.datamodel.LectureNoteDTO;
 import com.its.lilac.exception.LectureNoteException;
 import com.its.lilac.service.LectureNoteService;
+import org.apache.ibatis.annotations.One;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -30,9 +34,32 @@ public class LectureNoteController {
     @GetMapping("/lecture-note-list")
     public String getLectureNoteList(@RequestParam("memberId") long memberId, Model model){
         List<LectureNoteDTO> noteList = m_lectureNoteService.getLectureNoteList(memberId);
+        if(noteList == null){
+            noteList = new ArrayList<>(0);
+        }
         model.addAttribute("memberId", memberId);
         model.addAttribute("noteList", noteList);
         return "/lecture/lecture-note";
+    }
+
+    @GetMapping(value = "/lecture-note-list-json", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String getLectureNoteJsonList(HttpSession httpSession){
+        Object tmp = httpSession.getAttribute(SESSION_KEY.MEMBER_ID);
+        if(tmp == null)
+              return RESPONSEBODY_RESULT_STING.NO;
+
+        String result = null;
+        ObjectMapper om = new ObjectMapper();
+        long memberId = (long) httpSession.getAttribute(SESSION_KEY.MEMBER_ID);
+        try{
+
+            result = om.writerWithDefaultPrettyPrinter().writeValueAsString(m_lectureNoteService.getLectureNoteList(memberId));
+        }catch(JsonProcessingException jpe){
+            jpe.printStackTrace();
+            result = RESPONSEBODY_RESULT_STING.ERROR;
+        }
+        return result;
     }
 
     /**
@@ -65,18 +92,18 @@ public class LectureNoteController {
         return  isRemoved ? RESPONSEBODY_RESULT_STING.YES : RESPONSEBODY_RESULT_STING.NO;
     }
 
-    @GetMapping("/add-schedule")
+    @GetMapping("/add-license-note")
     @ResponseBody
-    public String addLicenseSchedule(@RequestParam("license_schedule_id") long licScheduleId,
-                              @RequestParam("lct_note_id") long lctNoteId){
-        boolean isAdded = m_lectureNoteService.addLicenseSchedule(licScheduleId, lctNoteId);
+    public String addLicenseToNote(@RequestParam("licenseCode") long licenseCode,
+                                     @RequestParam("lectureNoteId") long lectureNoteId){
+        boolean isAdded = m_lectureNoteService.addLicenseToNote(licenseCode, lectureNoteId);
         return isAdded ? RESPONSEBODY_RESULT_STING.YES : RESPONSEBODY_RESULT_STING.NO;
     }
 
     @GetMapping("/add-video")
     @ResponseBody
     public String addVideoToLectureNote(@RequestParam("videoId") String videoId,
-                                        @RequestParam("lectueNoteId") long lectureNoteId,
+                                        @RequestParam("lectureNoteId") long lectureNoteId,
                                         HttpSession httpSession){
 
         Object tmp = httpSession.getAttribute(SESSION_KEY.MEMBER_ID);

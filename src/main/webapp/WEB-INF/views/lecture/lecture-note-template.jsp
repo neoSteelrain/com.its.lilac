@@ -28,7 +28,7 @@
             </div>
             <div class="col-lg-3 col-md-3 col-12 align-right">
                 <ul class="action-btn">
-                    <li><a href="javascript:void(0)"><i class="lni lni-pencil"></i></a></li>
+                    <li><a href="javascript:void(0)"><i class="lni lni-notepad"></i></a></li>
                     <li><a href="javascript:void(0)"><i class="lni lni-trash"></i></a></li>
                 </ul>
             </div>

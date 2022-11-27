@@ -15,7 +15,7 @@
                lct_note_date,
                lct_progress,
                member_id,
-               license_schedule_id
+               license_code
         from tbl_lecture_note
         where member_id = #{memberId};
     </select>
@@ -25,10 +25,14 @@
         where lct_note_id = #{lct_note_id};
     </delete>
 
-    <insert id="addLicenseSchedule" parameterType="java.util.Map">
+    <insert id="addLicenseToNote" parameterType="java.util.Map">
         insert into ref_tbl_lecture_youtube(lct_note_id, member_id, video_id) values
         (#{lectureNoteId}),
         (#{memberId}),
         (#{videoId});
     </insert>
+
+    <update id="addLicenseToNote" parameterType="java.util.Map">
+        update tbl_lecture_note set license_code = #{licenseCode} where lct_note_id = #{lectureNoteId};
+    </update>
 </mapper>

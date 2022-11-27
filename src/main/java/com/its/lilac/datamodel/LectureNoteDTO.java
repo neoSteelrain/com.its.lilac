@@ -13,7 +13,7 @@ lct_desc
 lct_note_date
 lct_progress
 member_id
-license_schedule_id
+license_id
      */
     private long lct_note_id;
     private String lct_note_title;
@@ -21,5 +21,5 @@ license_schedule_id
     private Timestamp lct_note_date;
     private int lct_progress;
     private long member_id;
-    private long license_schedule_id;
+    private long license_id;
 }

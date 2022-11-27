@@ -10,6 +10,7 @@ import com.google.api.services.youtube.model.SearchResult;
 import com.its.lilac.common.PAIGING_CONFIG;
 import com.its.lilac.datamodel.PageDTO;
 import com.its.lilac.datamodel.VideoDTO;
+import com.its.lilac.exception.YoutubeAPIException;
 import com.its.lilac.repository.YoutubeAPIRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -109,14 +110,19 @@ public class YoutubeAPIService {
     }
 
     /**
-     * 유튜브 API를 호출하고 응답을 반환한다.
+     * 유튜브 DATA V3 API를 호출하고 응답을 반환한다.
+     * client에서는 요청, 응답 파라미터 2가지는 설정해줘야 하고, 파라미터들 사이의 역활이 구분되어 있다.
+     * 요청파라미터는 받고싶은 영상들을 필터링하는 설정.
+     * 응답파라미터는 요청파라미터로 검색된 영상들의 정보들 중 API호출의 효율성을 높이기 위해(빠른 응답시간?) 받고싶은 영상정보들을 설정한다.
+     * - 요청파라미터는 검색필터링, 응답파라미터는 검색된 각각의 영상의 받고싶은 정보들을 필터링하는 역활.
+     * TODO 생각보다 API응답대기 시간이 오래걸린다. 기본 1000ms가 넘어감. 비동기로 하든 배치로 따로 분리하는 작업이 필요하다.
      *
      * 요청파라미터를 정의하는 방법은 아래의 링크에 정의되어 있다.
      * https://developers.google.com/youtube/v3/docs/search/list
      *
      * 모든 필드를 반환하는 것이 아니고 내가 필요한 필드들만 골라 받을 수 있다.
-     * setFields 메소드에 문자열로 받고 싶은 필드들을 정의한다.
-     * 정의할 수 있는 필드들은 아래의 링크에 정의되어 있다.
+     * setFields 메소드에 문자열로 받고 싶은 응답필드들을 정의한다.
+     * 정의할 수 있는 응답필드들은 아래의 링크에 정의되어 있다.
      * https://developers.google.com/youtube/v3/docs/search
      * @param keyword 검색어
      * @param apiKey API 인증키
@@ -125,28 +131,28 @@ public class YoutubeAPIService {
     private SearchListResponse getSearchListResponse(String keyword, String apiKey){
         SearchListResponse response = null;
         try{
-            // 유튜브 객체 생성
+            // 유튜브 DATA V3 API 객체 생성
             YouTube youtube = new YouTube.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance(), new HttpRequestInitializer() {
                 public void initialize(HttpRequest request) throws IOException {
                 }
             }).setApplicationName("lilac").build();
 
-            // 키워드, 요청파라미터, 응답필드 설정
+            // 키워드, 요청파라미터 설정
             YouTube.Search.List search = youtube.search().list("id,snippet");
             search.setKey(apiKey);
             search.setQ(keyword);
             search.setType("video");
-            search.setMaxResults(50l);
+            search.setMaxResults(50L); // API 1 call 당 최대로 가져올 수 있는 영상의 갯수는 50개
             search.setOrder("viewCount");
             search.setVideoDefinition("high");
             search.setVideoEmbeddable("any");
             
             // 응답필드 설정
             search.setFields("items(id/kind,id/videoId,id/playlistId,snippet/title,snippet/thumbnails/high/url,snippet/publishedAt,snippet/channelId,snippet/description,snippet/channelTitle)");
-            response = search.execute(); // API 호출
+            response = search.execute(); // 유튜브 DATA V3 API 호출
 
         }catch(Exception e){
-            e.printStackTrace();
+            throw new YoutubeAPIException("유튜브 API호출 도중 예외 발생", e);
          }
         return response;
     }

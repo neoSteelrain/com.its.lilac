@@ -101,10 +101,8 @@
                         </div> -->
                         <div class="col-12">
                             <div class="search-btn button">
-<%--                                <button id="btn-search" class="btn" onclick="searchYoutubeList()"><i--%>
-                                    <button id="btn-search" class="btn" onclick="searchBtnHandler()"><i
-                                        class="lni lni-search-alt"></i> 검색
-                                </button>
+                                <%--                                <button id="btn-search" class="btn" onclick="searchYoutubeList()"><i--%>
+                                <button id="btn-search" class="btn" onclick="searchBtnHandler()"><i class="lni lni-search-alt"></i> 검색</button>
                             </div>
                         </div>
                     </div>
@@ -117,13 +115,13 @@
 <!-- End Hero Area -->
 
 <!-- 자격증 시험일정 정보 시작 -->
-<section class="categories style2">
+<section id="section-license" class="categories style2">
     <div class="container">
         <div class="cat-inner">
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">
-                        <h2 id="h-license" class="wow fadeInUp" data-wow-delay=".4s">자격증 시험일정 정보</h2>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">자격증 시험일정 정보</h2>
                         <!-- <p class="wow fadeInUp" data-wow-delay=".6s"></p> -->
                     </div>
                 </div>
@@ -225,16 +223,16 @@
         </div>
         <!--유튜브 페이징 인덱스 시작 -->
         <div id="div-paging-index">
-<%--            <div class="pagination left">--%>
-<%--                <ul class="pagination-list">--%>
-<%--                    <li><a href="javascript:void(0)"><i class="lni lni-chevron-left"></i></a></li>--%>
-<%--                    <li><a href="javascript:void(0)">1</a></li>--%>
-<%--                    <li class="active"><a href="javascript:void(0)">2</a></li>--%>
-<%--                    <li><a href="javascript:void(0)">3</a></li>--%>
-<%--                    <li><a href="javascript:void(0)">4</a></li>--%>
-<%--                    <li><a href="javascript:void(0)"><i class="lni lni-chevron-right"></i></a></li>--%>
-<%--                </ul>--%>
-<%--            </div>--%>
+            <%--            <div class="pagination left">--%>
+            <%--                <ul class="pagination-list">--%>
+            <%--                    <li><a href="javascript:void(0)"><i class="lni lni-chevron-left"></i></a></li>--%>
+            <%--                    <li><a href="javascript:void(0)">1</a></li>--%>
+            <%--                    <li class="active"><a href="javascript:void(0)">2</a></li>--%>
+            <%--                    <li><a href="javascript:void(0)">3</a></li>--%>
+            <%--                    <li><a href="javascript:void(0)">4</a></li>--%>
+            <%--                    <li><a href="javascript:void(0)"><i class="lni lni-chevron-right"></i></a></li>--%>
+            <%--                </ul>--%>
+            <%--            </div>--%>
         </div>
         <!--유튜브 페이징 인덱스 끝 -->
     </div>
@@ -541,6 +539,34 @@
         </div>
     </div>
     <!-- End Footer Middle -->
+
+    <!-- 강의노트 모달 시작 -->
+    <div class="modal fade" id="mdl-add-schedule" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title fs-5" id="staticBackdropLabel">강의노트를 선택하세요</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <select id="slt-note-list" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+<%--                            <option selected>강의노트 선택</option>--%>
+<%--                            <option value="1">노트1</option>--%>
+<%--                            <option value="2">노트2</option>--%>
+<%--                            <option value="3">노트3</option>--%>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                    <button id="btn-lecture-add" type="button" class="btn btn-primary btn-sm" onclick="addLicenseToLectureNote()">추가</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 강의노트 모달 끝-->
 </footer>
 <!--/ End Footer Area -->
 
@@ -633,9 +659,9 @@
      */
     const checkSelectedInput = () => {
         const m_selected_category = $('#slt-category').val();
-        if(m_selected_category > 0){
+        if (m_selected_category > 0) {
             $('#ipt-keyword').prop("disabled", true);
-        }else{
+        } else {
             $('#ipt-keyword').prop("disabled", false);
         }
     }
@@ -645,41 +671,41 @@
      */
     const searchBtnHandler = () => {
         const m_selected_category = $('#slt-category').val();
-        if(m_selected_category > 0){
+        if (m_selected_category > 0) {
             searchLicenseSchedulesByCategory();
             searchYoutubeList('1', m_selected_category);
-        }else{
+        } else {
             searchLicenseSchedulesByKeyword();
             searchYoutubeList('1', '0');
         }
 
         // 자격증 시험일정 태그로 스크롤 이동
-        let offset = $("#h-license").offset();
-        $("html, body").animate({scrollTop: offset.top},500);
+        let offset = $("#section-license").offset();
+        $("html, body").animate({scrollTop: offset.top}, 500);
     }
 
     /**
      * 사용자가 키워드검색으로 자격증을 검색했을때 처리하는 함수
      * @param keyword 사용자가 입력한 키워드
      */
-    const searchLicenseSchedulesByKeyword = () =>{
+    const searchLicenseSchedulesByKeyword = () => {
         const m_keyword = $('#ipt-keyword').val();
         if (m_keyword == "")
             return;
 
         $.ajax({
-            type:"get",
-            url:"/search/license/schedules-keyword",
+            type: "get",
+            url: "/search/license/schedules-keyword",
             dataType: "text",
-            data:{
-                keyword : m_keyword
+            data: {
+                keyword: m_keyword
             },
-            success:(result)=>{
+            success: (result) => {
                 let html = jQuery('<div>').html(result);
                 let contents = html.find("div#lic-schedule-template").html();
                 $('#div-lic-schedules').html(contents);
             },
-            error:(errMsg)=>{
+            error: (errMsg) => {
                 alert(errMsg.toString());
             }
         });
@@ -692,25 +718,97 @@
         const m_category = $('#slt-category').val();
 
         $.ajax({
-            type:"get",
-            url:"/search/license/schedules-category",
-            data:{
-                licenseCode : m_category
+            type: "get",
+            url: "/search/license/schedules-category",
+            data: {
+                licenseCode: m_category
             },
             dataType: "text",
-            success:(result)=>{
+            success: (result) => {
                 let html = jQuery('<div>').html(result);
                 let contents = html.find("div#lic-schedule-template").html();
                 $('#div-lic-schedules').html(contents);
             },
-            error:(errMsg)=>{
+            error: (errMsg) => {
                 alert(errMsg.toString());
             }
         });
     }
 
-    const addlicenseSchedule = () => {
-
+    /**
+     * 시험일정을 강의노트에 추가한다.
+     */
+    const addLicenseToLectureNote = () => {
+        // console.log($('#slt-note-list option:selected').val());
+        $.ajax({
+            type:"get",
+            url:"/lecture/add-license-note",
+            data:{
+                licenseCode:currentLicenseCode,
+                lectureNoteId:$('#slt-note-list option:selected').val()
+            },
+            dataType:"text",
+            success:(result)=>{
+                if(result == "YES"){
+                    alert('자격증을 강의노트에 추가했습니다.');
+                }else if(result == "NO"){
+                    alert('자격증을 강의노트에 추가를 실패하였습니다.');
+                }
+            },
+            error:(errResult)=>{
+                alert('자격증을 강의노트에 추가하는 도중 에러가 발생하였습니다.');
+            }
+        });
     }
+
+    /**
+     * 강의노트 모달창을 현재 로그인한 회원의 강의노트 리스트로 초기화 한다.
+     */
+    let currentLicenseCode = 0;
+    const initLectureNoteList = (licenseCode) => {
+        // 강의노트 리스트 초기화
+        $.ajax({
+            type:"get",
+            url:"/lecture/lecture-note-list-json",
+            datatype:"json",
+            success:(jsonList)=>{
+                console.log(jsonList);
+                if(jsonList == "NO"){
+                    return;
+                }
+                currentLicenseCode = licenseCode;
+                appendNoteList(jsonList);
+            },
+            error:(errMsg)=>{
+            }
+        });
+
+        $('#mdl-add-schedule').modal('show');
+    }
+
+    const appendNoteList = (jsonList) => {
+        if(jsonList.length == 0){
+            alert("생성된 강의노트가 없습니다.");
+            return;
+        }
+
+        const noteListTag = document.querySelector('#slt-note-list');
+        for(let i in jsonList){
+            if(i == 0){
+                let opDefault = document.createElement('option');
+                opDefault.setAttributeNode(document.createAttribute('selected'));
+                opDefault.textContent='강의노트 선택';
+                noteListTag. appendChild(opDefault);
+            }
+
+            let op = document.createElement('option');
+            op.textContent=jsonList[i]['lct_note_title'];
+            let val = document.createAttribute('value');
+            val.value = jsonList[i]['lct_note_id'];
+            op.setAttributeNode(val);
+            noteListTag.appendChild(op);
+        }
+    }
+
 </script>
 </html>

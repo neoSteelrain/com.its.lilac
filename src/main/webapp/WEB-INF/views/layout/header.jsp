@@ -38,7 +38,8 @@
                 <div class="nav-inner">
                     <nav class="navbar navbar-expand-lg">
                         <a class="navbar-brand" href="/">
-                            <img src="../../../resources/images/logo/logo.svg" alt="Logo">
+                            <h3>Lilac</h3>
+<%--                            <img src="../../../resources/images/logo/logo.svg" alt="Logo">--%>
                         </a>
                         <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -114,11 +115,5 @@
 <script src="../../../resources/js/tiny-slider.js"></script>
 <script src="../../../resources/js/glightbox.min.js"></script>
 <script src="../../../resources/js/main.js"></script>
-<script>
-    const requestUserInfo = () => {
-        console.log("FFFFFFF");
-        location.href = "/user/user-info?memberId=" + ${sessionScope.member_id};
-    }
-</script>
 </body>
 </html>

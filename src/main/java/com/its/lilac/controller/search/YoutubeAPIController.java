@@ -26,7 +26,6 @@ public class YoutubeAPIController {
     @Autowired
     private YoutubeAPIService m_youtubeService;
 
-
     /**
      * 유튜브API에 검색어를 설정해서 결과를 반환한다.
      * 뷰에서 ajax 호출결과로 HTML텍스트를 받아야 하기 때문에
@@ -53,6 +52,7 @@ public class YoutubeAPIController {
         } catch (Exception ioe) {
             // 예외가 발생할 경우 검색결과가 없도록 보여준다.
             model.addAttribute("videoList", new ArrayList<VideoDTO>(0));
+            // TODO 로그로 대체해야 한다.
             ioe.printStackTrace();
         }
         return "/youtube/paging-template";
@@ -67,7 +67,7 @@ public class YoutubeAPIController {
      */
     @GetMapping("/play")
     public String playVideo(@RequestParam("videoId") String videoId, Model model) {
-        VideoDTO video = m_youtubeService.getVideoInfo(videoId);
+        VideoDTO video = m_youtubeService.getVideoInfo(videoId.trim());
         model.addAttribute("video", video);
         return "/youtube/video-play";
     }

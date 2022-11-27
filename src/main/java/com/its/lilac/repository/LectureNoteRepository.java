@@ -31,11 +31,11 @@ public class LectureNoteRepository {
         return m_sql.delete("Lecture.removeLectureNote", lectureNoteId);
     }
 
-    public int addLicenseSchedule(long licScheduleId, long lctNoteId) {
+    public int addLicenseSchedule(long licenseCode, long lectureNoteId) {
         Map<String, Long> param = new HashMap<>(2);
-        param.put("licScheduleId", licScheduleId);
-        param.put("lctNoteId",lctNoteId);
-        return m_sql.insert("Lecture.addLicenseSchedule", param);
+        param.put("licenseCode", licenseCode);
+        param.put("lectureNoteId",lectureNoteId);
+        return m_sql.insert("Lecture.addLicenseToNote", param);
     }
 
     public int addVideoToLicenseNote(String videoId, long lectureNoteId, long memberId) {

@@ -25,8 +25,8 @@ public class LectureNoteService {
         return m_lectureNoteRepository.removeLectureNote(lectureNoteId) > 0;
     }
 
-    public boolean addLicenseSchedule(long licScheduleId, long lctNoteId) {
-        return m_lectureNoteRepository.addLicenseSchedule(licScheduleId, lctNoteId) > 0;
+    public boolean addLicenseToNote(long licenseCode, long lectureNoteId) {
+        return m_lectureNoteRepository.addLicenseSchedule(licenseCode, lectureNoteId) > 0;
     }
 
     public boolean addVideoToLicenseNote(String videoId, long lectureNoteId, long memberId) {

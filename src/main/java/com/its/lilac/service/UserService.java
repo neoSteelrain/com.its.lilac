@@ -55,7 +55,7 @@ public class UserService {
             String contextPath = saveDir.getPath() + "\\" + storedFileName;
             profile.transferTo(new File(contextPath));
         }catch(IOException ioe){
-            throw new LilacException(ioe);
+            throw new LilacException("회원 프로필이미지 저자중 예외 발생", ioe);
         }
     }
 

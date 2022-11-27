@@ -18,7 +18,7 @@
         <div class="row align-items-center">
             <div class="col-lg-7 col-md-7 col-12">
                 <div class="item-image">
-                    <img src="../../resources/images/qnet-logo.gif" alt="#" height="72" width="106">
+                    <img src="../../resources/images/qnet-logo.gif" alt="#">
                     <div class="content">
                         <h3 class="title"><a href="javascript:void(0)">${schedule.license_name}</a></h3>
                         <span class="price">${schedule.lic_desc}</span>
@@ -30,11 +30,11 @@
             </div>
             <div class="col-lg-2 col-md-2 col-12">
                 <p>${schedule.lic_end_date}</p>
-                <input id="ipt-lic-code" hidden value="${schedule.license_code}">
             </div>
             <div class="col-lg-1 col-md-1 col-12 align-right">
                 <ul class="action-btn">
-                    <li><a href="javascript:void(0)"><i class="lni lni-plus"></i></a></li>
+<%--                    <li><a href="javascript:initLectureNoteList()" data-bs-toggle="modal" data-bs-target="#staticBackdrop" ><i class="lni lni-plus"></i></a></li>--%>
+                    <li><a href="javascript:initLectureNoteList('${schedule.license_code}');" ><i class="lni lni-plus"></i></a></li>
                 </ul>
             </div>
         </div>
