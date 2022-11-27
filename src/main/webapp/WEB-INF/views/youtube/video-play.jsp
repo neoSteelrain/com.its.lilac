@@ -43,6 +43,7 @@
                                 src="https://www.youtube.com/embed/${video.video_id}?autoplay=1&playsinline=1"
                                 frameborder="0" allowfullscreen>
                         </iframe>
+                        <input id="ipt-video-id" hidden value="${video.video_id}">
                     </div>
                     <div class="post-details">
                         <div class="detail-inner">
@@ -92,7 +93,21 @@
 <script src="../../../resources/js/main.js"></script>
 <script>
     const addVideoToLectureNote = () => {
+        $.ajax({
+            type:"get",
+            url:"/lecture//add-video",
+            data:{
+                videoId:$('#ipt-video-id').val(),
+                lectureNoteId:0,
+            },
+            datatype:"text",
+            success:(result)=>{
+                console.log(result);
+            },
+            error:()=>{
 
+            }
+        });
     }
 </script>
 </body>
