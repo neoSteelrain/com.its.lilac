@@ -35,7 +35,7 @@ public class LectureNoteRepository {
         Map<String, Long> param = new HashMap<>(2);
         param.put("licenseCode", licenseCode);
         param.put("lectureNoteId",lectureNoteId);
-        return m_sql.insert("Lecture.addLicenseToNote", param);
+        return m_sql.insert("Lecture.addLicenseSchedule", param);
     }
 
     public int addVideoToLicenseNote(String videoId, long lectureNoteId, long memberId) {

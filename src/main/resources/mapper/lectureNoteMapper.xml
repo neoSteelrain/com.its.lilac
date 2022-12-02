@@ -32,7 +32,7 @@
         (#{videoId});
     </insert>
 
-    <update id="addLicenseToNote" parameterType="java.util.Map">
+    <update id="addLicenseSchedule" parameterType="java.util.Map">
         update tbl_lecture_note set license_code = #{licenseCode} where lct_note_id = #{lectureNoteId};
     </update>
 </mapper>
