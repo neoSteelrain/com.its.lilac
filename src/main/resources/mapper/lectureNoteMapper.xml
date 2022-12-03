@@ -17,7 +17,8 @@
                member_id,
                license_code
         from tbl_lecture_note
-        where member_id = #{memberId};
+        where member_id = #{memberId}
+            and license_code = null;
     </select>
 
     <delete id="removeLectureNote" parameterType="long">

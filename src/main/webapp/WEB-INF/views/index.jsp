@@ -51,7 +51,11 @@
 <!-- /End Preloader -->
 <jsp:include page="../views/layout/header.jsp" flush="false"></jsp:include>
 
-<section class="hero-area style2 overlay">
+<!--padding-top: 150px;
+  padding-bottom: 100px;
+  background-image: url("https://via.placeholder.com/2100x1280"); -->
+<%--<section class="hero-area style2 overlay">--%>
+<section class="hero-area overlay" style="padding-top: 150px; padding-bottom: 100px; background-image:  url('/resources/images/hut-6968718.svg')">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-7 col-md-12 col-12">
@@ -546,7 +550,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title fs-5" id="staticBackdropLabel">강의노트를 선택하세요</h3>
+                    <h4 class="modal-title fs-5" id="staticBackdropLabel">강의노트를 선택하세요</h4><br>
+                    <labal>선택할 수 있는 강의노트 목록</labal>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -777,21 +782,19 @@
                     return;
                 }
                 currentLicenseCode = licenseCode;
-                appendNoteList(jsonList);
+                if(jsonList.length == 0){
+                    alert("추가할 강의노트가 없습니다.");
+                }else{
+                    appendNoteList(jsonList);
+                    $('#mdl-add-schedule').modal('show');
+                }
             },
             error:(errMsg)=>{
             }
         });
-
-        $('#mdl-add-schedule').modal('show');
     }
 
     const appendNoteList = (jsonList) => {
-        if(jsonList.length == 0){
-            alert("생성된 강의노트가 없습니다.");
-            return;
-        }
-
         const noteListTag = document.querySelector('#slt-note-list');
         for(let i in jsonList){
             if(i == 0){

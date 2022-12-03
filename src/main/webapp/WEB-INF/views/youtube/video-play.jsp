@@ -71,7 +71,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:addVideoToLectureNote(0)">
+                                    <a href="javascript:addVideoToLectureNote()">
                                         <i class="lni lni-plus"></i>
                                     </a>
                                 </li>
